@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="payment.payment_acquirer_blzpinpay" model="payment.acquirer">
             <field name="name">BlazePinPay</field>
             <field name="image" type="base64" file="payment_stripe/static/src/img/stripe_icon.png"/>
