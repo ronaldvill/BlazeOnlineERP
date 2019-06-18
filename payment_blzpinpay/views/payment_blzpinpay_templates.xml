@@ -24,7 +24,7 @@
             <script type="text/javascript">
                 odoo.define(function (require) {
                     var ajax = require('web.ajax');
-                    ajax.loadJS("/payment_stripe/static/src/js/stripe.js");
+                    ajax.loadJS("/payment_blzpinpay/static/src/js/stripe.js");
                 });
             </script>
         </template>
