@@ -13,7 +13,7 @@ _logger = logging.getLogger(__name__)
 class StripeController(http.Controller):
 
     @http.route(['/payment/blzpinpay/s2s/create_json'], type='json', auth='public')
-    def stripe_s2s_create_json(self, **kwargs):
+    def blzpinpay_s2s_create_json(self, **kwargs):
         acquirer_id = int(kwargs.get('acquirer_id'))
         acquirer = request.env['payment.acquirer'].browse(acquirer_id)
         if not kwargs.get('partner_id'):
@@ -21,7 +21,7 @@ class StripeController(http.Controller):
         return acquirer.s2s_process(kwargs).id
 
     @http.route(['/payment/blzpinpay/s2s/create'], type='http', auth='public')
-    def stripe_s2s_create(self, **post):
+    def blzpinpay_s2s_create(self, **post):
         acquirer_id = int(post.get('acquirer_id'))
         acquirer = request.env['payment.acquirer'].browse(acquirer_id)
         error = None
@@ -38,7 +38,7 @@ class StripeController(http.Controller):
         return werkzeug.utils.redirect(return_url)
 
     @http.route(['/payment/blzpinpay/s2s/create_json_3ds'], type='json', auth='public', csrf=False)
-    def stripe_s2s_create_json_3ds(self, verify_validity=False, **kwargs):
+    def blzpinpay_s2s_create_json_3ds(self, verify_validity=False, **kwargs):
         if not kwargs.get('partner_id'):
             kwargs = dict(kwargs, partner_id=request.env.user.partner_id.id)
         token = request.env['payment.acquirer'].browse(int(kwargs.get('acquirer_id'))).s2s_process(kwargs)

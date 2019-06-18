@@ -128,10 +128,10 @@ class PaymentTransactionStripe(models.Model):
         return res
 
     @api.multi
-    def stripe_s2s_do_transaction(self, **kwargs):
+    def blzpinpay_s2s_do_transaction(self, **kwargs):
         self.ensure_one()
         result = self._create_stripe_charge(acquirer_ref=self.payment_token_id.acquirer_ref, email=self.partner_email)
-        return self._stripe_s2s_validate_tree(result)
+        return self._blzpinpay_s2s_validate_tree(result)
 
 
     def _create_stripe_refund(self):
@@ -153,10 +153,10 @@ class PaymentTransactionStripe(models.Model):
         return res
 
     @api.multi
-    def stripe_s2s_do_refund(self, **kwargs):
+    def blzpinpay_s2s_do_refund(self, **kwargs):
         self.ensure_one()
         result = self._create_stripe_refund()
-        return self._stripe_s2s_validate_tree(result)
+        return self._blzpinpay_s2s_validate_tree(result)
 
     @api.model
     def _blzpinpay_form_get_tx_from_data(self, data):
@@ -187,7 +187,7 @@ class PaymentTransactionStripe(models.Model):
         return tx[0]
 
     @api.multi
-    def _stripe_s2s_validate_tree(self, tree):
+    def _blzpinpay_s2s_validate_tree(self, tree):
         self.ensure_one()
         if self.state != 'draft':
             _logger.info('Stripe: trying to validate an already validated tx (ref %s)', self.reference)
@@ -225,7 +225,7 @@ class PaymentTransactionStripe(models.Model):
 
     @api.multi
     def _blzpinpay_form_validate(self,  data):
-        return self._stripe_s2s_validate_tree(data)
+        return self._blzpinpay_s2s_validate_tree(data)
 
 
 class PaymentTokenStripe(models.Model):

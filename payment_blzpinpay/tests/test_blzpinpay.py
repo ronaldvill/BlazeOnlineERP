@@ -15,7 +15,7 @@ class StripeCommon(PaymentAcquirerCommon):
 @odoo.tests.tagged('post_install', '-at_install', '-standard', 'external')
 class StripeTest(StripeCommon):
 
-    def test_10_stripe_s2s(self):
+    def test_10_blzpinpay_s2s(self):
         self.assertEqual(self.stripe.environment, 'test', 'test without test environment')
 
         # Add Stripe credentials
@@ -45,7 +45,7 @@ class StripeTest(StripeCommon):
             'type': 'server2server',
             'amount': 115.0
         })
-        tx.stripe_s2s_do_transaction()
+        tx.blzpinpay_s2s_do_transaction()
 
         # Check state
         self.assertEqual(tx.state, 'done', 'Stripe: Transcation has been discarded.')
