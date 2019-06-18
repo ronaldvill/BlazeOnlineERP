@@ -4,7 +4,7 @@
         <record id="payment.payment_acquirer_blzpinpay" model="payment.acquirer">
             <field name="name">BlazePinPay</field>
             <field name="image" type="base64" file="payment_stripe/static/src/img/stripe_icon.png"/>
-            <field name="provider">stripe</field>
+            <field name="provider">blzpinpay</field>
             <field name="company_id" ref="base.main_company"/>
             <field name="view_template_id" ref="stripe_form"/>
             <field name="registration_view_template_id" ref="stripe_s2s_form"/>
