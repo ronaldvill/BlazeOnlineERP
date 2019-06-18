@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': 'Stripe Payment Acquirer',
+    'name': 'BlazePinPay Payment Acquirer',
     'category': 'Hidden',
-    'summary': 'Payment Acquirer: Stripe Implementation',
+    'summary': 'Payment Acquirer: BlazePinPay Implementation',
     'version': '1.0',
-    'description': """Stripe Payment Acquirer""",
+    'description': """BlazeOnline PinPayment Payment Acquirer""",
     'depends': ['payment'],
     'data': [
         'views/payment_views.xml',
-        'views/payment_stripe_templates.xml',
+        'views/payment_blzpinpay_templates.xml',
         'data/payment_acquirer_data.xml',
     ],
     'images': ['static/description/icon.png'],
