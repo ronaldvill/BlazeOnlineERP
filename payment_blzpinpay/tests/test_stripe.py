@@ -9,7 +9,7 @@ class StripeCommon(PaymentAcquirerCommon):
 
     def setUp(self):
         super(StripeCommon, self).setUp()
-        self.stripe = self.env.ref('payment.payment_acquirer_stripe')
+        self.stripe = self.env.ref('payment_acquirer_blzpinpay')
 
 
 @odoo.tests.tagged('post_install', '-at_install', '-standard', 'external')
