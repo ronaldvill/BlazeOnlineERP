@@ -5,7 +5,7 @@
     'category': 'Hidden',
     'summary': 'Payment Acquirer: BlazePinPay Implementation',
     'version': '1.0',
-    'description': """BlazeOnline PinPayment Payment Acquirer""",
+    'description': """BlazePinPay Payment Acquirer""",
     'depends': ['payment'],
     'data': [
         'views/payment_views.xml',
