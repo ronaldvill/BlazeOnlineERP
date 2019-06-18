@@ -50,7 +50,7 @@ class StripeTest(StripeCommon):
         # Check state
         self.assertEqual(tx.state, 'done', 'Stripe: Transcation has been discarded.')
 
-    def test_20_stripe_form_render(self):
+    def test_20_blzpinpay_form_render(self):
         self.assertEqual(self.stripe.environment, 'test', 'test without test environment')
 
         # ----------------------------------------
@@ -62,7 +62,7 @@ class StripeTest(StripeCommon):
         # Generated and received
         self.assertIn(self.buyer_values.get('partner_email'), res, 'Stripe: email input not found in rendered template')
 
-    def test_30_stripe_form_management(self):
+    def test_30_blzpinpay_form_management(self):
         self.assertEqual(self.stripe.environment, 'test', 'test without test environment')
 
         # typical data posted by Stripe after client has successfully paid

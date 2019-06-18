@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <template id="stripe_form">
+        <template id="blzpinpay_form">
             <input type="hidden" name="data_set" t-att-data-action-url="tx_url" data-remove-me=""/>
             <input type="hidden" name='stripe_image' t-att-value="acquirer.stripe_image_url"/>
             <input type="hidden" name='merchant' t-att-value='acquirer.company_id.name'/>
@@ -29,8 +29,8 @@
             </script>
         </template>
 
-        <template id="stripe_s2s_form">
-            <input type="hidden" name="data_set" data-create-route="/payment/stripe/s2s/create_json_3ds"/>
+        <template id="blzpinpay_s2s_form">
+            <input type="hidden" name="data_set" data-create-route="/payment/blzpinpay/s2s/create_json_3ds"/>
             <div t-attf-class="row mt8 #{'' if bootstrap_formatting else 'o_card_brand_detail'}">
                 <div t-att-class="'form-group col-lg-12' if bootstrap_formatting else 'form-group'">
                     <input type="tel" name="cc_number" id="cc_number" class="form-control" placeholder="Card number" data-is-required="true"/>

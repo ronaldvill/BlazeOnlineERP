@@ -37,7 +37,7 @@ class PaymentAcquirerStripe(models.Model):
              "https://stripe.com/docs/checkout")
 
     @api.multi
-    def stripe_form_generate_values(self, tx_values):
+    def blzpinpay_form_generate_values(self, tx_values):
         self.ensure_one()
         stripe_tx_values = dict(tx_values)
         temp_stripe_tx_values = {
@@ -62,7 +62,7 @@ class PaymentAcquirerStripe(models.Model):
         return 'api.stripe.com/v1'
 
     @api.model
-    def stripe_s2s_form_process(self, data):
+    def blzpinpay_s2s_form_process(self, data):
         payment_token = self.env['payment.token'].sudo().create({
             'cc_number': data['cc_number'],
             'cc_holder_name': data['cc_holder_name'],
@@ -75,7 +75,7 @@ class PaymentAcquirerStripe(models.Model):
         return payment_token
 
     @api.multi
-    def stripe_s2s_form_validate(self, data):
+    def blzpinpay_s2s_form_validate(self, data):
         self.ensure_one()
 
         # mandatory fields
@@ -159,7 +159,7 @@ class PaymentTransactionStripe(models.Model):
         return self._stripe_s2s_validate_tree(result)
 
     @api.model
-    def _stripe_form_get_tx_from_data(self, data):
+    def _blzpinpay_form_get_tx_from_data(self, data):
         """ Given a data dict coming from stripe, verify it and find the related
         transaction record. """
         reference = data.get('metadata', {}).get('reference')
@@ -216,7 +216,7 @@ class PaymentTransactionStripe(models.Model):
             return False
 
     @api.multi
-    def _stripe_form_get_invalid_parameters(self, data):
+    def _blzpinpay_form_get_invalid_parameters(self, data):
         invalid_parameters = []
         reference = data['metadata']['reference']
         if reference != self.reference:
@@ -224,7 +224,7 @@ class PaymentTransactionStripe(models.Model):
         return invalid_parameters
 
     @api.multi
-    def _stripe_form_validate(self,  data):
+    def _blzpinpay_form_validate(self,  data):
         return self._stripe_s2s_validate_tree(data)
 
 

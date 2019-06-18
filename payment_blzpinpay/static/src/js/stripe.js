@@ -41,7 +41,7 @@ odoo.define('payment_stripe.stripe', function(require) {
                                 '</h2>'
                     });
                 }
-                ajax.jsonRpc("/payment/stripe/create_charge", 'call', {
+                ajax.jsonRpc("/payment/blzpinpay/create_charge", 'call', {
                     tokenid: token.id,  // TBE TODO: for backward compatibility, remove on master
                     email: token.email, // TBE TODO: for backward compatibility, remove on master
                     token: token,
@@ -77,14 +77,14 @@ odoo.define('payment_stripe.stripe', function(require) {
         for(var i=0; i<mutations.length; ++i) {
             for(var j=0; j<mutations[i].addedNodes.length; ++j) {
                 if(mutations[i].addedNodes[j].tagName.toLowerCase() === "form" && mutations[i].addedNodes[j].getAttribute('provider') == 'stripe') {
-                    display_stripe_form($(mutations[i].addedNodes[j]));
+                    display_blzpinpay_form($(mutations[i].addedNodes[j]));
                 }
             }
         }
     });
 
 
-    function display_stripe_form(provider_form) {
+    function display_blzpinpay_form(provider_form) {
         // Open Checkout with further options
         var payment_form = $('.o_payment_form');
         if(!payment_form.find('i').length)
@@ -126,6 +126,6 @@ odoo.define('payment_stripe.stripe', function(require) {
 
     $.getScript("https://checkout.stripe.com/checkout.js", function(data, textStatus, jqxhr) {
         observer.observe(document.body, {childList: true});
-        display_stripe_form($('form[provider="stripe"]'));
+        display_blzpinpay_form($('form[provider="stripe"]'));
     });
 });
