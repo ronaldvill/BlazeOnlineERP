@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//controllers/main.py=utf-8
+encoding//models/__init__.py=utf-8
+encoding//models/payment.py=utf-8
+encoding//tests/__init__.py=utf-8
+encoding//tests/test_blzpinpay.py=utf-8
+encoding/__init__.py=utf-8
+encoding/__manifest__.py=utf-8
