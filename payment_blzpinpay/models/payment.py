@@ -59,7 +59,9 @@ class PaymentAcquirerStripe(models.Model):
 
     @api.model
     def _get_stripe_api_url(self):
-        return 'api.stripe.com/v1'
+        # https://api.pin.net.au
+        # https://test-api.pin.net.au
+        return 'test-api.pin.net.au/1'
 
     @api.model
     def blzpinpay_s2s_form_process(self, data):
