@@ -4,7 +4,7 @@
     'name': 'BlazePinPay Payment Acquirer',
     'category': 'Hidden',
     'summary': 'Payment Acquirer: BlazePinPay Implementation',
-    'version': '1.0',
+    'version': '1.1',
     'description': """BlazePinPay Payment Acquirer""",
     'depends': ['payment'],
     'data': [
