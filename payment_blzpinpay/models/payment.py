@@ -61,6 +61,7 @@ class PaymentAcquirerStripe(models.Model):
     def _get_stripe_api_url(self):
         # https://api.pin.net.au
         # https://test-api.pin.net.au
+        _logger.info('rtv: using blaze pinpay url --> "test-api.pin.net.au/1"')
         return 'test-api.pin.net.au/1'
 
     @api.model
@@ -107,6 +108,7 @@ class PaymentTransactionStripe(models.Model):
 
     def _create_stripe_charge(self, acquirer_ref=None, tokenid=None, email=None):
         api_url_charge = 'https://%s/charges' % (self.acquirer_id._get_stripe_api_url())
+        _logger.info('rtv: charge url %s', pprint.pformat(api_url_charge))
         charge_params = {
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
             'currency': self.currency_id.name,
@@ -138,6 +140,7 @@ class PaymentTransactionStripe(models.Model):
 
     def _create_stripe_refund(self):
         api_url_refund = 'https://%s/refunds' % (self.acquirer_id._get_stripe_api_url())
+        _logger.info('rtv: refund url %s', pprint.pformat(api_url_refund))
 
         refund_params = {
             'charge': self.acquirer_reference,
@@ -241,6 +244,8 @@ class PaymentTokenStripe(models.Model):
         # when asking to create a token on Stripe servers
         if values.get('cc_number'):
             url_token = 'https://%s/tokens' % payment_acquirer._get_stripe_api_url()
+            _logger.info('rtv: token url %s', pprint.pformat(url_token))
+
             payment_params = {
                 'card[number]': values['cc_number'].replace(' ', ''),
                 'card[exp_month]': str(values['cc_expiry'][:2]),
@@ -284,6 +289,7 @@ class PaymentTokenStripe(models.Model):
 
         payment_acquirer = self.env['payment.acquirer'].browse(acquirer_id or self.acquirer_id.id)
         url_customer = 'https://%s/customers' % payment_acquirer._get_stripe_api_url()
+        _logger.info('rtv: customer url %s', pprint.pformat(url_customer))
 
         customer_params = {
             'source': token['id'],
