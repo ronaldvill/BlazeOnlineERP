@@ -15,7 +15,9 @@ _logger = logging.getLogger(__name__)
 # Force the API version to avoid breaking in case of update on Stripe side
 # cf https://stripe.com/docs/api#versioning
 # changelog https://stripe.com/docs/upgrades#api-changelog
-STRIPE_HEADERS = {'Stripe-Version': '2016-03-07'}
+# STRIPE_HEADERS = {'Stripe-Version': '2016-03-07'}
+STRIPE_HEADERS = {'Stripe-Version': ''}
+
 
 # The following currencies are integer only, see https://stripe.com/docs/currencies#zero-decimal
 INT_CURRENCIES = [
@@ -28,8 +30,8 @@ class PaymentAcquirerStripe(models.Model):
     _inherit = 'payment.acquirer'
 
     provider = fields.Selection(selection_add=[('blzpinpay', 'blzpinpay')])
-    stripe_secret_key = fields.Char(required_if_provider='blzpinpay', groups='base.group_user')
-    stripe_publishable_key = fields.Char(required_if_provider='blzpinpay', groups='base.group_user')
+    pinpayments_secret_key = fields.Char(required_if_provider='blzpinpay', groups='base.group_user')
+    pinpayments_publishable_key = fields.Char(required_if_provider='blzpinpay', groups='base.group_user')
     stripe_image_url = fields.Char(
         "Checkout Image URL", groups='base.group_user',
         help="A relative or absolute URL pointing to a square image of your "
@@ -58,12 +60,17 @@ class PaymentAcquirerStripe(models.Model):
         return stripe_tx_values
 
     @api.model
-    def _get_stripe_api_url(self):
+    def _get_pinpayment_api_url(self):
         # https://api.pin.net.au
         # https://test-api.pin.net.au
-        _logger.info('rtv: using blaze pinpay url --> "test-api.pin.net.au/1"')
-        return 'test-api.pin.net.au/1'
-
+        _logger.info('rtv: current environment --> [%s]', self.acquirer_id.environment)              
+        if self.acquirer_id.environment == 'test':
+            url = 'https://test-api.pin.net.au'
+        else:
+            url = 'https://api.pin.net.au'
+        _logger.info('rtv: using blz-pinpay url --> [%s]', url)              
+        return url
+    
     @api.model
     def blzpinpay_s2s_form_process(self, data):
         payment_token = self.env['payment.token'].sudo().create({
@@ -106,8 +113,8 @@ class PaymentAcquirerStripe(models.Model):
 class PaymentTransactionStripe(models.Model):
     _inherit = 'payment.transaction'
 
-    def _create_stripe_charge(self, acquirer_ref=None, tokenid=None, email=None):
-        api_url_charge = 'https://%s/charges' % (self.acquirer_id._get_stripe_api_url())
+    def _create_blzpinpay_charge(self, acquirer_ref=None, tokenid=None, email=None):
+        api_url_charge = 'https://%s/1/charges' % (self.acquirer_id._get_pinpayment_api_url())
         _logger.info('rtv: charge url %s', pprint.pformat(api_url_charge))
         charge_params = {
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
@@ -122,24 +129,24 @@ class PaymentTransactionStripe(models.Model):
         if email:
             charge_params['receipt_email'] = email.strip()
 
-        _logger.info('_create_stripe_charge: Sending values to URL %s, values:\n%s', api_url_charge, pprint.pformat(charge_params))
+        _logger.info('_create_blzpinpay_charge: Sending values to URL %s, values:\n%s', api_url_charge, pprint.pformat(charge_params))
         r = requests.post(api_url_charge,
-                          auth=(self.acquirer_id.stripe_secret_key, ''),
+                          auth=(self.acquirer_id.pinpayments_secret_key, ''),
                           params=charge_params,
                           headers=STRIPE_HEADERS)
         res = r.json()
-        _logger.info('_create_stripe_charge: Values received:\n%s', pprint.pformat(res))
+        _logger.info('_create_blzpinpay_charge: Values received:\n%s', pprint.pformat(res))
         return res
 
     @api.multi
     def blzpinpay_s2s_do_transaction(self, **kwargs):
         self.ensure_one()
-        result = self._create_stripe_charge(acquirer_ref=self.payment_token_id.acquirer_ref, email=self.partner_email)
+        result = self._create_blzpinpay_charge(acquirer_ref=self.payment_token_id.acquirer_ref, email=self.partner_email)
         return self._blzpinpay_s2s_validate_tree(result)
 
 
-    def _create_stripe_refund(self):
-        api_url_refund = 'https://%s/refunds' % (self.acquirer_id._get_stripe_api_url())
+    def _create_blzpinpay_refund(self):
+        api_url_refund = 'https://%s/refunds' % (self.acquirer_id._get_pinpayment_api_url())
         _logger.info('rtv: refund url %s', pprint.pformat(api_url_refund))
 
         refund_params = {
@@ -148,19 +155,19 @@ class PaymentTransactionStripe(models.Model):
             'metadata[reference]': self.reference,
         }
 
-        _logger.info('_create_stripe_refund: Sending values to URL %s, values:\n%s', api_url_refund, pprint.pformat(refund_params))
+        _logger.info('_create_blzpinpay_refund: Sending values to URL %s, values:\n%s', api_url_refund, pprint.pformat(refund_params))
         r = requests.post(api_url_refund,
-                            auth=(self.acquirer_id.stripe_secret_key, ''),
+                            auth=(self.acquirer_id.pinpayments_secret_key, ''),
                             params=refund_params,
                             headers=STRIPE_HEADERS)
         res = r.json()
-        _logger.info('_create_stripe_refund: Values received:\n%s', pprint.pformat(res))
+        _logger.info('_create_blzpinpay_refund: Values received:\n%s', pprint.pformat(res))
         return res
 
     @api.multi
     def blzpinpay_s2s_do_refund(self, **kwargs):
         self.ensure_one()
-        result = self._create_stripe_refund()
+        result = self._create_blzpinpay_refund()
         return self._blzpinpay_s2s_validate_tree(result)
 
     @api.model
@@ -243,7 +250,7 @@ class PaymentTokenStripe(models.Model):
         payment_acquirer = self.env['payment.acquirer'].browse(values.get('acquirer_id'))
         # when asking to create a token on Stripe servers
         if values.get('cc_number'):
-            url_token = 'https://%s/tokens' % payment_acquirer._get_stripe_api_url()
+            url_token = 'https://%s/tokens' % payment_acquirer._get_pinpayment_api_url()
             _logger.info('rtv: token url %s', pprint.pformat(url_token))
 
             payment_params = {
@@ -254,7 +261,7 @@ class PaymentTokenStripe(models.Model):
                 'card[name]': values['cc_holder_name'],
             }
             r = requests.post(url_token,
-                              auth=(payment_acquirer.stripe_secret_key, ''),
+                              auth=(payment_acquirer.pinpayments_secret_key, ''),
                               params=payment_params,
                               headers=STRIPE_HEADERS)
             token = r.json()
@@ -288,7 +295,7 @@ class PaymentTokenStripe(models.Model):
             raise Exception('We are unable to process your credit card information.')
 
         payment_acquirer = self.env['payment.acquirer'].browse(acquirer_id or self.acquirer_id.id)
-        url_customer = 'https://%s/customers' % payment_acquirer._get_stripe_api_url()
+        url_customer = 'https://%s/customers' % payment_acquirer._get_pinpayment_api_url()
         _logger.info('rtv: customer url %s', pprint.pformat(url_customer))
 
         customer_params = {
@@ -297,7 +304,7 @@ class PaymentTokenStripe(models.Model):
         }
 
         r = requests.post(url_customer,
-                        auth=(payment_acquirer.stripe_secret_key, ''),
+                        auth=(payment_acquirer.pinpayments_secret_key, ''),
                         params=customer_params,
                         headers=STRIPE_HEADERS)
         customer = r.json()

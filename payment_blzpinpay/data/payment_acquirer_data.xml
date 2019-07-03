@@ -4,7 +4,7 @@
     
         <record id="payment_acquirer_blzpinpay" model="payment.acquirer">
             <field name="name">Blaze PinPay</field>
-            <field name="image" type="base64" file="payment_blzpinpay/static/src/img/stripe_icon.png"/>
+            <field name="image" type="base64" file="payment_blzpinpay/static/description/icon.png"/>
             <field name="provider">blzpinpay</field>
             <field name="company_id" ref="base.main_company"/>
             <field name="view_template_id" ref="blzpinpay_form"/>
@@ -12,8 +12,9 @@
             <field name="environment">test</field>
             <field name="pre_msg"><![CDATA[
 <p>You will be prompted with PinPay Payment page for payment information.</p>]]></field>
-            <field name="stripe_secret_key">dummy</field>
-            <field name="stripe_publishable_key">dummy</field>
+            <field name="pinpayments_secret_key">dummy</field>
+            <field name="pinpayments_publishable_key">dummy</field>
+            <field name="pinpayments_url">dummy</field>            
         </record>
     </data>
 </odoo>

@@ -64,7 +64,7 @@ class StripeController(http.Controller):
         return res
 
     @http.route(['/payment/blzpinpay/create_charge'], type='json', auth='public')
-    def stripe_create_charge(self, **post):
+    def blzpinpay_create_charge(self, **post):
         """ Create a payment transaction
 
         Expects the result from the user input from checkout.js popup"""
@@ -88,9 +88,9 @@ class StripeController(http.Controller):
                 'stripe_token': stripe_token
             })
             tx.payment_token_id = payment_token_id
-            response = tx._create_stripe_charge(acquirer_ref=payment_token_id.acquirer_ref, email=stripe_token['email'])
+            response = tx._create_blzpinpay_charge(acquirer_ref=payment_token_id.acquirer_ref, email=stripe_token['email'])
         else:
-            response = tx._create_stripe_charge(tokenid=stripe_token['id'], email=stripe_token['email'])
+            response = tx._create_blzpinpay_charge(tokenid=stripe_token['id'], email=stripe_token['email'])
         _logger.info('Stripe: entering form_feedback with post data %s', pprint.pformat(response))
         if response:
             request.env['payment.transaction'].sudo().with_context(lang=None).form_feedback(response, 'stripe')

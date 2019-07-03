@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr='//group[@name="acquirer"]' position='after'>
                 <group attrs="{'invisible': [('provider', '!=', 'blzpinpay')]}">
-                    <field name="stripe_secret_key" password="True"/>
-                    <field name="stripe_publishable_key" password="True"/>
+                    <field name="pinpayments_secret_key" password="True"/>
+                    <field name="pinpayments_publishable_key" password="True"/>
                 </group>
             </xpath>
             <xpath expr='//group[@name="acquirer_config"]' position='after'>
