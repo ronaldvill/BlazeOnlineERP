@@ -30,8 +30,8 @@ class PaymentAcquirerStripe(models.Model):
     _inherit = 'payment.acquirer'
 
     provider = fields.Selection(selection_add=[('blzpinpay', 'blzpinpay')])
-    pinpayments_secret_key = fields.Char(required_if_provider='blzpinpay', groups='base.group_user')
-    pinpayments_publishable_key = fields.Char(required_if_provider='blzpinpay', groups='base.group_user')
+    pinpayments_secret_key = fields.Char('PinPayments Secret Key', required_if_provider='blzpinpay', groups='base.group_user')
+    pinpayments_publishable_key = fields.Char('PinPayments Publishable Key', required_if_provider='blzpinpay', groups='base.group_user')
     stripe_image_url = fields.Char(
         "Checkout Image URL", groups='base.group_user',
         help="A relative or absolute URL pointing to a square image of your "
