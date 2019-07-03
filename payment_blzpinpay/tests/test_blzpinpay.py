@@ -20,8 +20,8 @@ class StripeTest(StripeCommon):
 
         # Add Stripe credentials
         self.stripe.write({
-            'pinpayments_secret_key': 'd7rOHP9Eiti6vsKT7AzwEQ',
-            'pinpayments_publishable_key': 'pk_uKTj8kNaN2DtCn4yEsMCrQ',
+            'blzpinpay_au_secret_key': 'd7rOHP9Eiti6vsKT7AzwEQ',
+            'blzpinpay_au_publishable_key': 'pk_uKTj8kNaN2DtCn4yEsMCrQ',
         })
 
         # Create payment meethod for Stripe

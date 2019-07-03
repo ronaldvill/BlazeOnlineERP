@@ -29,9 +29,18 @@ INT_CURRENCIES = [
 class PaymentAcquirerStripe(models.Model):
     _inherit = 'payment.acquirer'
 
-    provider = fields.Selection(selection_add=[('blzpinpay', 'blzpinpay')])
-    pinpayments_secret_key = fields.Char('PinPayments Secret Key', required_if_provider='blzpinpay', groups='base.group_user')
-    pinpayments_publishable_key = fields.Char('PinPayments Publishable Key', required_if_provider='blzpinpay', groups='base.group_user')
+    provider = fields.Selection(selection_add=[('blzpinpay', 'Blaze PinPay')])
+    blzpinpay_au_secret_key = fields.Char(required_if_provider='blzpinpay', 
+                                         groups='base.group_user')
+    blzpinpay_au_publishable_key = fields.Char(required_if_provider='blzpinpay', 
+                                              groups='base.group_user')
+    blzpinpay_us_secret_key = fields.Char(required_if_provider='blzpinpay', 
+                                         groups='base.group_user')
+    blzpinpay_us_publishable_key = fields.Char(required_if_provider='blzpinpay', 
+                                              groups='base.group_user')
+    pinpayments_url = fields.Char(required_if_provider='blzpinpay',
+                                  groups='base.group_user')
+    
     stripe_image_url = fields.Char(
         "Checkout Image URL", groups='base.group_user',
         help="A relative or absolute URL pointing to a square image of your "
@@ -131,7 +140,7 @@ class PaymentTransactionStripe(models.Model):
 
         _logger.info('_create_blzpinpay_charge: Sending values to URL %s, values:\n%s', api_url_charge, pprint.pformat(charge_params))
         r = requests.post(api_url_charge,
-                          auth=(self.acquirer_id.pinpayments_secret_key, ''),
+                          auth=(self.acquirer_id.blzpinpay_au_secret_key, ''),
                           params=charge_params,
                           headers=STRIPE_HEADERS)
         res = r.json()
@@ -157,7 +166,7 @@ class PaymentTransactionStripe(models.Model):
 
         _logger.info('_create_blzpinpay_refund: Sending values to URL %s, values:\n%s', api_url_refund, pprint.pformat(refund_params))
         r = requests.post(api_url_refund,
-                            auth=(self.acquirer_id.pinpayments_secret_key, ''),
+                            auth=(self.acquirer_id.blzpinpay_au_secret_key, ''),
                             params=refund_params,
                             headers=STRIPE_HEADERS)
         res = r.json()
@@ -261,7 +270,7 @@ class PaymentTokenStripe(models.Model):
                 'card[name]': values['cc_holder_name'],
             }
             r = requests.post(url_token,
-                              auth=(payment_acquirer.pinpayments_secret_key, ''),
+                              auth=(payment_acquirer.blzpinpay_au_secret_key, ''),
                               params=payment_params,
                               headers=STRIPE_HEADERS)
             token = r.json()
@@ -304,7 +313,7 @@ class PaymentTokenStripe(models.Model):
         }
 
         r = requests.post(url_customer,
-                        auth=(payment_acquirer.pinpayments_secret_key, ''),
+                        auth=(payment_acquirer.blzpinpay_au_secret_key, ''),
                         params=customer_params,
                         headers=STRIPE_HEADERS)
         customer = r.json()

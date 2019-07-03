@@ -7,8 +7,11 @@
         <field name="arch" type="xml">
             <xpath expr='//group[@name="acquirer"]' position='after'>
                 <group attrs="{'invisible': [('provider', '!=', 'blzpinpay')]}">
-                    <field name="pinpayments_secret_key" password="True"/>
-                    <field name="pinpayments_publishable_key" password="True"/>
+                    <field name="blzpinpay_au_secret_key" password="True"/>
+                    <field name="blzpinpay_au_publishable_key" password="True"/>
+                    <field name="blzpinpay_us_secret_key" password="True"/>
+                    <field name="blzpinpay_us_publishable_key" password="True"/>
+                    <field name="pinpayments_url" password="True"/>                   
                 </group>
             </xpath>
             <xpath expr='//group[@name="acquirer_config"]' position='after'>
