@@ -180,6 +180,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     .attr({type: 'hidden', name: 'card_token'})
                     .val(card.token)
                     .appendTo($_form);
+                    $('input[name="csrf_token"]').appendTo($_form);
 
                     console.log(card);
                     console.log($_form.serialize());
