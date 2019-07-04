@@ -2,6 +2,7 @@
 import logging
 import pprint
 import werkzeug
+import requests
 
 from odoo import http
 from odoo.http import request
