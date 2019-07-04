@@ -115,14 +115,26 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             // Restore 'Pay Now' button HTML since data might have changed it.
             $(provider_form[0]).find('#pay_stripe').replaceWith($pay_stripe);
         }).done(function () {
+            var $_dialog = $('<div style="z-index: 2147483661;display: block;background: rgba(0, 0, 0, 0.5);border: 0px none transparent;overflow: hidden auto;visibility: visible;margin: 0px;padding: 0px;-webkit-tap-highlight-color: transparent;position: fixed;left: 0px;top: 0px;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;"></div>');
+            var $_dialog_container = $(['<div class="inner-content" style="width: 400px;height: 500px;background: #fff;">',
+            "<fieldset>",
+              "<legend>Payment</legend>",
+              "<label for='cc-number'>Credit Card Number</label>",
+              "<input id='cc-number' type='text'>",
+              "<label for='cc-name'>Name on Card</label>",
+              "<input id='cc-name' type='text'>",
+              "<label for='cc-expiry-month'>Expiry Month</label>",
+              "<input id='cc-expiry-month'>",
+              "<label for='cc-expiry-year'>Expiry Year</label>",
+              "<input id='cc-expiry-year'>",
+             "<label for='cc-cvc'>CVC</label>",
+              "<input id='cc-cvc'>",
+              "</fieldset>",
+            "<input type='submit' value='Pay now'></input>",
+            '</div>'].join(''));
+            $_dialog.append($_dialog_container)
+            $_dialog.insertAfter($(provider_form[0]))
             alert('should open dialog now!');
-            // getStripeHandler().open({
-            //     name: merchant,
-            //     description: invoice_num,
-            //     email: email,
-            //     currency: currency,
-            //     amount: _.contains(int_currencies, currency) ? amount : amount * 100,
-            // });
         });
     }
 
