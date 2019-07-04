@@ -124,7 +124,7 @@ odoo.define('payment_stripe.stripe', function(require) {
         });
     }
 
-	display_blzpinpay_form($('form[provider="stripe"]'));
+	display_blzpinpay_form($('form[provider="blzpinpay"]'));
 	
     // $.getScript("https://checkout.stripe.com/checkout.js", function(data, textStatus, jqxhr) {
     //    observer.observe(document.body, {childList: true});
