@@ -117,43 +117,43 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
         }).done(function () {
             var $_dialog = $('<div style="z-index: 2147483661;display: block;background: rgba(0, 0, 0, 0.5);border: 0px none transparent;overflow: hidden auto;visibility: visible;margin: 0px;padding: 0px;-webkit-tap-highlight-color: transparent;position: fixed;left: 0px;top: 0px;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;"></div>');
             var $_dialog_container = $(['<div class="inner-content" style="width: 400px;height: 500px;background: #fff;">',
-            "<form action='/payment/blzpinpay/create_charge' class='pin' method='post'>",
-            "<fieldset>",
-            "<legend>Billing</legend>",
-            "<label for='address-line1'>Address 1</label>",
-            "<input id='address-line1'>",
-            "<label for='address-line2'>Address 2</label>",
-            "<input id='address-line2'>",
-            "<label for='address-city'>City</label>",
-            "<input id='address-city'>",
-            "<label for='address-state'>State</label>",
-            "<input id='address-state'>",
-            "<label for='address-postcode'>Postcode</label>",
-            "<input id='address-postcode'>",
-            "<label for='address-country'>Country</label>",
-            "<input id='address-country'>",
-          "</fieldset>",
-                "<fieldset>",
-                "<legend>Payment</legend>",
-                "<label for='cc-number'>Credit Card Number</label>",
-                "<input id='cc-number' type='text'>",
-                "<label for='cc-name'>Name on Card</label>",
-                "<input id='cc-name' type='text'>",
-                "<label for='cc-expiry-month'>Expiry Month</label>",
-                "<input id='cc-expiry-month'>",
-                "<label for='cc-expiry-year'>Expiry Year</label>",
-                "<input id='cc-expiry-year'>",
-                "<label for='cc-cvc'>CVC</label>",
-                "<input id='cc-cvc'>",
-                "</fieldset>",
-                "<input type='submit' value='Pay now'></input>",
-                "</form>",
             '</div>'].join(''));
-            var form = $('form.pin'),
-                submitButton = form.find(":submit");
+            var $_form = $([
+                "<form action='/payment/blzpinpay/create_charge' class='pin' method='post'>",
+                "<fieldset>",
+                "<legend>Billing</legend>",
+                "<label for='address-line1'>Address 1</label>",
+                "<input id='address-line1'>",
+                "<label for='address-line2'>Address 2</label>",
+                "<input id='address-line2'>",
+                "<label for='address-city'>City</label>",
+                "<input id='address-city'>",
+                "<label for='address-state'>State</label>",
+                "<input id='address-state'>",
+                "<label for='address-postcode'>Postcode</label>",
+                "<input id='address-postcode'>",
+                "<label for='address-country'>Country</label>",
+                "<input id='address-country'>",
+              "</fieldset>",
+                    "<fieldset>",
+                    "<legend>Payment</legend>",
+                    "<label for='cc-number'>Credit Card Number</label>",
+                    "<input id='cc-number' type='text'>",
+                    "<label for='cc-name'>Name on Card</label>",
+                    "<input id='cc-name' type='text'>",
+                    "<label for='cc-expiry-month'>Expiry Month</label>",
+                    "<input id='cc-expiry-month'>",
+                    "<label for='cc-expiry-year'>Expiry Year</label>",
+                    "<input id='cc-expiry-year'>",
+                    "<label for='cc-cvc'>CVC</label>",
+                    "<input id='cc-cvc'>",
+                    "</fieldset>",
+                    "<input type='submit' value='Pay now'></input>",
+                    "</form>"].join(''))
+            var submitButton = $_form.find(":submit");
             var pinApi = new Pin.Api($("input[name='stripe_key']").val(), 'test');
 
-            form.submit(function(e) {
+            $_form.submit(function(e) {
                 e.preventDefault();
             
                 // Disable the submit button to prevent multiple clicks
@@ -179,14 +179,15 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     $('<input>')
                     .attr({type: 'hidden', name: 'card_token'})
                     .val(card.token)
-                    .appendTo(form);
+                    .appendTo($_form);
 
                     console.log(card);
-                    console.log(form.serialize());
+                    console.log($_form.serialize());
 
-                    form.get(0).submit();
-                }, handleError).done();
+                    $_form.get(0).submit();
+                }).done();
             });
+            $_dialog_container.append($_form)
             $_dialog.append($_dialog_container)
             $_dialog.insertAfter($(provider_form[0]))
         });
