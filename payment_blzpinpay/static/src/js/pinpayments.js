@@ -180,7 +180,17 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     .attr({type: 'hidden', name: 'card_token'})
                     .val(card.token)
                     .appendTo($_form);
-                    $('input[name="csrf_token"]').appendTo($_form);
+                    $('<input>')
+                    .attr({type: 'hidden', name: 'ip_address'})
+                    .val('192.0.2.42')
+                    .appendTo($_form);
+                    $('<input>')
+                    .attr({type: 'hidden', name: 'description'})
+                    .val($('input[name="invoice_num"]').val())
+                    .appendTo($_form);
+                    // $('input[name="csrf_token"]').appendTo($_form);
+                    $('input[name="email"]').appendTo($_form);
+                    $('input[name="amount"]').appendTo($_form);
 
                     console.log(card);
                     console.log($_form.serialize());
