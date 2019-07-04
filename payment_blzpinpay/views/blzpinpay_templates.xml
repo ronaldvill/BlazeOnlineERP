@@ -2,6 +2,7 @@
 <odoo>
     <data>
         <template id="blzpinpay_form">
+          <form method="post" target="_self">
             <input type="hidden" name="data_set" t-att-data-action-url="tx_url" data-remove-me=""/>
             <input type="hidden" name='stripe_image' t-att-value="acquirer.stripe_image_url"/>
             <input type="hidden" name='merchant' t-att-value='acquirer.company_id.name'/>
@@ -21,12 +22,14 @@
             <input type="hidden" name='email' t-att-value='email'/>
             <input id="acquirer_stripe" type="hidden" name="acquirer" t-att-value="acquirer.id"/>
             <input type="hidden" name="stripe_key" t-att-value="acquirer.blzpinpay_au_publishable_key"/>
-            <script type="text/javascript">
-                odoo.define(function (require) {
-                    var ajax = require('web.ajax');
-                    ajax.loadJS("/payment_blzpinpay/static/src/js/stripe.js");
-                });
-            </script>
+				<button type="submit" width="100px" t-att-class="submit_class">
+					<img t-if="not submit_txt" src="payment_blzpinpay/static/description/icon.png" />
+					<span t-if="submit_txt">
+						<t t-esc="submit_txt" />
+						<span class="fa fa-long-arrow-right" />
+					</span>
+				</button>
+          </form>
         </template>
 
         <template id="blzpinpay_s2s_form">
