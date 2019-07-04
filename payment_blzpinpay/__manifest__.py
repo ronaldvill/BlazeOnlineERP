@@ -9,7 +9,7 @@
     'depends': ['payment'],
     'data': [
         'views/payment_views.xml',
-        'views/payment_blzpinpay_templates.xml',
+        'views/blzpinpay_templates.xml',
         'data/payment_acquirer_data.xml',
     ],
     'images': ['static/description/pinpayments_payment_gateway_banner.png'],
