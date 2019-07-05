@@ -99,15 +99,19 @@ class StripeController(http.Controller):
                                             auth=(api_key, " "))
             customer_object = json.loads(customers.text)
 
+            _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug
+
             
             del post['card_token'] # delete card_token on charge post entry
             post['customer_token'] = customer_object['response']['token'] # replace with `customer_token`
 
             post["amount"] = int(float(post["amount"]))
             post['amount'] *= 100
+            _logger.info('post: %s', pprint.pformat(post))  # debug
 
             data = requests.post(url + '/1/charges/', params=post,
                                 auth=(api_key, " "))
+            _logger.info('data: %s', pprint.pformat(data))  # debug
             if 'false' or 'true' or 'null'in data.text:
                 result = data.text.replace(
                     'false', 'False')
