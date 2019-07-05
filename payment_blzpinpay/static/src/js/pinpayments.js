@@ -71,6 +71,13 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             var $_dialog = $('<div style="z-index: 2147483661;display: block;background: rgba(0, 0, 0, 0.5);border: 0px none transparent;overflow: hidden auto;visibility: visible;margin: 0px;padding: 0px;-webkit-tap-highlight-color: transparent;position: fixed;left: 0px;top: 0px;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;"></div>');
             var $_dialog_container = $(['<div class="inner-content" style="width: 400px;height: 500px;background: #fff;">',
             '</div>'].join(''));
+            var $_emailField = "";
+            if($('input[name="email"]').val() == "") {
+                $_emailField = [
+                    "<label for='cc-email'>Email</label>",
+                    "<input id='cc-email' type='text'>",
+                ].join("");
+            }
             var $_form = $([
                 "<form action='/payment/blzpinpay/create_charge' class='pin' method='post'>",
                     "<fieldset>",
@@ -79,6 +86,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     "<input id='cc-number' type='text'>",
                     "<label for='cc-name'>Name on Card</label>",
                     "<input id='cc-name' type='text'>",
+                    $_emailField,
                     "<label for='cc-expiry-month'>Expiry Month</label>",
                     "<input id='cc-expiry-month'>",
                     "<label for='cc-expiry-year'>Expiry Year</label>",
@@ -119,14 +127,13 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     .val(card.token)
                     .appendTo($_form);
                     $('<input>')
-                    .attr({type: 'hidden', name: 'ip_address'})
-                    .val('192.0.2.42')
-                    .appendTo($_form);
-                    $('<input>')
                     .attr({type: 'hidden', name: 'description'})
                     .val($('input[name="invoice_num"]').val())
                     .appendTo($_form);
                     // $('input[name="csrf_token"]').appendTo($_form);
+                    if($('input[name="email"]').val() == "") {
+                        $('input[name="email"]').val($('#cc-email').val())
+                    }
                     $('input[name="email"]').appendTo($_form);
                     $('input[name="amount"]').appendTo($_form);
                     $('input[name="currency"]').appendTo($_form);

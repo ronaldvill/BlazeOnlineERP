@@ -90,6 +90,7 @@ class StripeController(http.Controller):
             
             _logger.info('URL: %s', url)  # debug
 
+            post["amount"] = int(float(post["amount"]))
             post['amount'] *= 100
 
             data = requests.post(url + '/1/charges/', params=post,
