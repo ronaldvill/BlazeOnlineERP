@@ -90,6 +90,18 @@ class StripeController(http.Controller):
             
             _logger.info('URL: %s', url)  # debug
 
+            # Creating the customer using the card_token
+            customer = dict()
+            customer["email"] = post["email"]
+            customer["card_token"] = post['card_token']
+            customers = requests.post(url + '/1/customers/', params=customer,
+                                            auth=(api_key, " "))
+            customer_object = json.loads(customers.text)
+
+            
+            del post['card_token'] # delete card_token on charge post entry
+            post['customer_token'] = customer_object['response']['token'] # replace with `customer_token`
+
             post["amount"] = int(float(post["amount"]))
             post['amount'] *= 100
 
