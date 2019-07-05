@@ -3,6 +3,7 @@ import logging
 import pprint
 import werkzeug
 import requests
+import json
 
 from odoo import http
 from odoo.http import request
