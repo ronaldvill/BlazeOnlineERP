@@ -5,7 +5,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
     var core = require('web.core');
     var _t = core._t;
     var qweb = core.qweb;
-    ajax.loadXML('/payment_blzpinpay/static/src/xml/stripe_templates.xml', qweb);
+    ajax.loadXML('/payment_blzpinpay/static/src/xml/blzpinpay_templates.xml', qweb);
 
     // The following currencies are integer only, see
     // https://stripe.com/docs/currencies#zero-decimal
@@ -20,53 +20,6 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
         $.blockUI.defaults.css.border = '0';
         $.blockUI.defaults.css["background-color"] = '';
         $.blockUI.defaults.overlayCSS["opacity"] = '0.9';
-    }
-    var stripeHandler;
-    function getStripeHandler()
-    {
-        if (stripeHandler) {
-            return stripeHandler;
-        }
-        var pinApi = new Pin.Api($("input[name='stripe_key']").val(), 'test');
-        // var handler = stripeHandler = StripeCheckout.configure({
-        //     key: $("input[name='stripe_key']").val(),
-        //     image: $("input[name='stripe_image']").val(),
-        //     locale: 'auto',
-        //     token: function(token, args) {
-        //         handler.isTokenGenerate = true;
-        //         if ($.blockUI) {
-        //             var msg = _t("Just one more second, confirming your payment...");
-        //             $.blockUI({
-        //                 'message': '<h2 class="text-white"><img src="/web/static/src/img/spin.png" class="fa-pulse"/>' +
-        //                         '    <br />' + msg +
-        //                         '</h2>'
-        //             });
-        //         }
-        //         ajax.jsonRpc("/payment/blzpinpay/create_charge", 'call', {
-        //             tokenid: token.id,  // TBE TODO: for backward compatibility, remove on master
-        //             email: token.email, // TBE TODO: for backward compatibility, remove on master
-        //             token: token,
-        //             amount: $("input[name='amount']").val(),
-        //             acquirer_id: $("#acquirer_stripe").val(),
-        //             currency: $("input[name='currency']").val(),
-        //             invoice_num: $("input[name='invoice_num']").val(),
-        //             tx_ref: $("input[name='invoice_num']").val(),
-        //             return_url: $("input[name='return_url']").val()
-        //         }).always(function(){
-        //             if ($.blockUI) {
-        //                 $.unblockUI();
-        //             }
-        //         }).done(function(data){
-        //             handler.isTokenGenerate = false;
-        //             window.location.href = data;
-        //         }).fail(function(data){
-        //             var msg = data && data.data && data.data.message;
-        //             var wizard = $(qweb.render('stripe.error', {'msg': msg || _t('Payment error')}));
-        //             wizard.appendTo($('body')).modal({'keyboard': true});
-        //         });
-        //     },
-        // });
-        return handler;
     }
 
     require('web.dom_ready');
@@ -136,7 +89,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     "<input type='submit' value='Pay now'></input>",
                     "</form>"].join(''))
             var submitButton = $_form.find(":submit");
-            var pinApi = new Pin.Api($("input[name='stripe_key']").val(), 'test');
+            var pinApi = new Pin.Api($("input[name='blzpinpay_key']").val(), 'test');
 
             $_form.submit(function(e) {
                 e.preventDefault();
@@ -176,6 +129,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     // $('input[name="csrf_token"]').appendTo($_form);
                     $('input[name="email"]').appendTo($_form);
                     $('input[name="amount"]').appendTo($_form);
+                    $('input[name="currency"]').appendTo($_form);
 
                     console.log(card);
                     console.log($_form.serialize());

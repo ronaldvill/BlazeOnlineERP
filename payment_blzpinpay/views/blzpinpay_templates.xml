@@ -23,7 +23,7 @@
             <input type="hidden" name='phone' t-att-value='phone'/>
             <input type="hidden" name='email' t-att-value='email'/>
             <input id="acquirer_stripe" type="hidden" name="acquirer" t-att-value="acquirer.id"/>
-            <input type="hidden" name="stripe_key" t-att-value="acquirer.blzpinpay_au_publishable_key"/>
+            <input type="hidden" name="blzpinpay_key" t-att-value="acquirer.blzpinpay_au_publishable_key"/>
             <script type="text/javascript">
                 odoo.define(function (require) {
                     var ajax = require('web.ajax');

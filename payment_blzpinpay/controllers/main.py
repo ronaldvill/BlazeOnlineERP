@@ -82,11 +82,18 @@ class StripeController(http.Controller):
                 url = 'https://test-api.pin.net.au'
             else:
                 url = 'https://api.pin.net.au'
+
+            if post['currency'] == 'AUD':
+                api_key = acquirer.blzpinpay_au_secret_key
+            else:
+                api_key = acquirer.blzpinpay_us_secret_key
             
             _logger.info('URL: %s', url)  # debug
 
+            post['amount'] *= 100
+
             data = requests.post(url + '/1/charges/', params=post,
-                                auth=(acquirer.blzpinpay_au_publishable_key, " "))
+                                auth=(api_key, " "))
             if 'false' or 'true' or 'null'in data.text:
                 result = data.text.replace(
                     'false', 'False')
