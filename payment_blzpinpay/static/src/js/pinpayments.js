@@ -151,12 +151,12 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     expiry_month:     $('#cc-expiry-month').val(),
                     expiry_year:      $('#cc-expiry-year').val(),
                     cvc:              $('#cc-cvc').val(),
-                    address_line1:    $("input[name='address_line1']").val()	// $('#address-line1').val(),
-                    address_line2:    $("input[name='address_line2']").val()	// $('#address-line2').val(),
-                    address_city:     $("input[name='address_city']").val()		// $('#address-city').val(),
-                    address_state:    $("input[name='address_state']").val()	// $('#address-state').val(),
-                    address_postcode: $("input[name='address_postcode']").val()	// $('#address-postcode').val(),
-                    address_country:  $("input[name='address_country']").val()	// $('#address-country').val()
+                    address_line1:    $("input[name='address_line1']").val(),
+                    address_line2:    $("input[name='address_line2']").val(),
+                    address_city:     $("input[name='address_city']").val(),
+                    address_state:    $("input[name='address_state']").val(),
+                    address_postcode: $("input[name='address_postcode']").val(),
+                    address_country:  $("input[name='address_country']").val()
                 };
             
                 // Request a token for the card from Pin Payments
