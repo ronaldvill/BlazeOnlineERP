@@ -14,8 +14,11 @@
             <!-- Billing Information-->
             <input type="hidden" name='name' t-att-value='name'/>
             <input type="hidden" name='address_line1' t-att-value='address_line1'/>
+            <input type="hidden" name='address_line2' t-att-value='address_line2'/>
             <input type="hidden" name='address_city' t-att-value='address_city'/>
-            <input type="hidden" name='address_zip' t-att-value='address_zip'/>
+            <input type="hidden" name='address_state' t-att-value='address_state'/>
+            <input type="hidden" name='address_postcode' t-att-value='address_postcode'/>
+            <!-- <input type="hidden" name='address_zip' t-att-value='address_zip'/> -->
             <input type="hidden" name='address_country' t-att-value='address_country'/>
             <input type="hidden" name='phone' t-att-value='phone'/>
             <input type="hidden" name='email' t-att-value='email'/>
