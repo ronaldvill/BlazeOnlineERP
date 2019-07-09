@@ -74,16 +74,16 @@ class StripeController(http.Controller):
         """Expects the result from the user input from pin.v2.js popup"""
         TX = request.env['payment.transaction']
         tx = None
-        _logger.info('tx_ref: %s', pprint.pformat(post.get('tx_ref')))  # debug  
         if post.get('tx_ref'):
             tx = TX.sudo().search([('reference', '=', post['tx_ref'])])
+            _logger.info('rtv: 1. tx: %s', pprint.pformat(tx))  # debug  
         if not tx:
             tx_id = (post.get('tx_id') or request.session.get('sale_transaction_id') or
                      request.session.get('website_payment_tx_id'))
             tx = TX.sudo().browse(int(tx_id))
+            _logger.info('rtv: 2. tx: %s', pprint.pformat(tx))  # debug  
         if not tx:
             raise werkzeug.exceptions.NotFound()
-        _logger.info('tx: %s', pprint.pformat(tx))  # debug  
  
         """ create pin customer af from card token """
         if post['card_token']:
@@ -120,7 +120,7 @@ class StripeController(http.Controller):
  
         blzpinpay_token = customer_object['response']['token']
         response = None
-        _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', pprint.pformat(tx.type), pprint.pformat(tx.partner_id))  # debug  
+        _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug  
         if tx.type == 'form_save' and tx.partner_id:
             payment_token_id = request.env['payment.token'].sudo().create({
                 'acquirer_id': tx.acquirer_id.id,
