@@ -74,6 +74,7 @@ class StripeController(http.Controller):
         """Expects the result from the user input from pin.v2.js popup"""
         TX = request.env['payment.transaction']
         tx = None
+        _logger.info('tx_ref: %s', pprint.pformat(post.get('tx_ref')))  # debug  
         if post.get('tx_ref'):
             tx = TX.sudo().search([('reference', '=', post['tx_ref'])])
         if not tx:
@@ -131,7 +132,7 @@ class StripeController(http.Controller):
             response = tx._create_blzpinpay_charge(acquirer_ref=payment_token_id.acquirer_ref, email=blzpinpay_token['email'])
         else:
             _logger.info('rtv: false no create payment.token?')  # debug  
-            response = tx._create_blzpinpay_charge(tokenid=blzpinpay_token['id'], email=blzpinpay_token['email'])
+            response = tx._create_blzpinpay_charge(tokenid=blzpinpay_token['id'], email=post["email"])
         
         _logger.info('Stripe: entering form_feedback with post data %s', pprint.pformat(response))
         if response:
