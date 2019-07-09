@@ -68,16 +68,29 @@ class StripeController(http.Controller):
     @http.route([
         '/payment/blzpinpay/create_charge',
     ], type='http', auth='none', csrf=False)
-    def pinpayments_return(self, **post):
+    def blzpinpay_create_charge(self, **post):
         _logger.info(post)  # debug
-        """ Gets the Post data pinpayments after making payment """
+
+        """Expects the result from the user input from pin.v2.js popup"""
+        TX = request.env['payment.transaction']
+        tx = None
+        if post.get('tx_ref'):
+            tx = TX.sudo().search([('reference', '=', post['tx_ref'])])
+        if not tx:
+            tx_id = (post.get('tx_id') or request.session.get('sale_transaction_id') or
+                     request.session.get('website_payment_tx_id'))
+            tx = TX.sudo().browse(int(tx_id))
+        if not tx:
+            raise werkzeug.exceptions.NotFound()
+ 
+        """ create pin customer af from card token """
         if post['card_token']:
             _logger.info('Card token passed: %s', post['card_token'])  # debug
             acquirer = request.env['payment.acquirer'].search(
                 [('provider', '=', 'blzpinpay')]
             )
-# Gets the details of charge using card_token from pinpayments for
-# further process
+            """ Gets the details of charge using card_token from pinpayments 
+                for further process """
             _logger.info('Acquirer environment: %s',acquirer.environment)  # debug
             if acquirer.environment == 'test':
                 url = 'https://test-api.pin.net.au'
@@ -98,29 +111,29 @@ class StripeController(http.Controller):
             customers = requests.post(url + '/1/customers/', params=customer,
                                             auth=(api_key, " "))
             customer_object = json.loads(customers.text)
-
-            _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug
-
-            
-            del post['card_token'] # delete card_token on charge post entry
-            post['customer_token'] = customer_object['response']['token'] # replace with `customer_token`
-
-            post["amount"] = int(float(post["amount"]))
-            post['amount'] *= 100
-            _logger.info('post: %s', pprint.pformat(post))  # debug
-
-            data = requests.post(url + '/1/charges/', params=post,
-                                auth=(api_key, " "))
-            _logger.info('data: %s', pprint.pformat(data))  # debug
-            if 'false' or 'true' or 'null'in data.text:
-                result = data.text.replace(
-                    'false', 'False')
-                result = result.replace('true', 'True')
-                result = result.replace('null', 'False')
-                result = eval(result)
-            post = result
-        _logger.info('Beginning Pin Payments form_feedback with post data %s',
-                     pprint.pformat(post))  # debug
+            _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug  
+        else:
+            _logger.info('no "card_token" detected from pinpayment response')  # debug            
+            raise werkzeug.exceptions.NotFound()
+ 
+        blzpinpay_token = customer_object['response']['token']
+        response = None
+        if tx.type == 'form_save' and tx.partner_id:
+            payment_token_id = request.env['payment.token'].sudo().create({
+                'acquirer_id': tx.acquirer_id.id,
+                'partner_id': tx.partner_id.id,
+                'blzpinpay_token': blzpinpay_token
+            })
+            tx.payment_token_id = payment_token_id
+            response = tx._create_blzpinpay_charge(acquirer_ref=payment_token_id.acquirer_ref, email=blzpinpay_token['email'])
+        else:
+            response = tx._create_blzpinpay_charge(tokenid=blzpinpay_token['id'], email=blzpinpay_token['email'])
+        
+        _logger.info('Stripe: entering form_feedback with post data %s', pprint.pformat(response))
+        if response:
+            request.env['payment.transaction'].sudo().with_context(lang=None).form_feedback(response, 'stripe')
+        # add the payment transaction into the session to let the page /payment/process to handle it
+        PaymentProcessing.add_payment_transaction(tx)
         return "/payment/process"
 
     # @http.route(['/payment/blzpinpay/create_charge'], type='json', auth='public')

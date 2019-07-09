@@ -126,6 +126,8 @@ class PaymentTransactionStripe(models.Model):
         api_url_charge = 'https://%s/1/charges' % (self.acquirer_id._get_pinpayment_api_url())
         _logger.info('rtv: charge url %s', pprint.pformat(api_url_charge))
         charge_params = {
+            # do we need: post["amount"] = int(float(post["amount"]))
+            #             post['amount'] *= 100
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
             'currency': self.currency_id.name,
             'metadata[reference]': self.reference,
@@ -133,16 +135,24 @@ class PaymentTransactionStripe(models.Model):
         }
         if acquirer_ref:
             charge_params['customer'] = acquirer_ref
-        if tokenid:
-            charge_params['card'] = str(tokenid)
         if email:
-            charge_params['receipt_email'] = email.strip()
+            charge_params['email'] = email.strip()
+        if tokenid:
+            charge_params['customer_token'] = str(tokenid)
+            # post['customer_token'] = customer_object['response']['token'] 
+        _logger.info('charge_params: %s', pprint.pformat(charge_params))  # debug    
+
+        _logger.info('rtv currency: %s', self.currency_id.name)  # debug
+        if self.currency_id.name == 'AUD':
+            api_key = acquirer.blzpinpay_au_secret_key
+        else:
+            api_key = acquirer.blzpinpay_us_secret_key
+        _logger.info('rtv api_key: %s', api_key)  # debug
 
         _logger.info('_create_blzpinpay_charge: Sending values to URL %s, values:\n%s', api_url_charge, pprint.pformat(charge_params))
         r = requests.post(api_url_charge,
-                          auth=(self.acquirer_id.blzpinpay_au_secret_key, ''),
-                          params=charge_params,
-                          headers=STRIPE_HEADERS)
+                          auth=(api_key, ''),
+                          params=charge_params)
         res = r.json()
         _logger.info('_create_blzpinpay_charge: Values received:\n%s', pprint.pformat(res))
         return res

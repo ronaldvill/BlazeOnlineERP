@@ -130,6 +130,10 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     .attr({type: 'hidden', name: 'description'})
                     .val($('input[name="invoice_num"]').val())
                     .appendTo($_form);
+                    $('<input>')
+                    .attr({type: 'hidden', name: 'tx_ref'})
+                    .val($('input[name="invoice_num"]').val())
+                    .appendTo($_form);
                     // $('input[name="csrf_token"]').appendTo($_form);
                     if($('input[name="email"]').val() == "") {
                         $('input[name="email"]').val($('#cc-email').val())
@@ -149,8 +153,6 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             $_dialog.insertAfter($(provider_form[0]))
         });
     }
-
-	// display_blzpinpay_form($('form[provider="blzpinpay"]'));
 	
     $.getScript("https://cdn.pinpayments.com/pin.v2.js", function(data, textStatus, jqxhr) {
        observer.observe(document.body, {childList: true});
