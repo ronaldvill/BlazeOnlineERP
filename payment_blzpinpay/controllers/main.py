@@ -82,6 +82,7 @@ class StripeController(http.Controller):
             tx = TX.sudo().browse(int(tx_id))
         if not tx:
             raise werkzeug.exceptions.NotFound()
+        _logger.info('tx: %s', pprint.pformat(tx))  # debug  
  
         """ create pin customer af from card token """
         if post['card_token']:
