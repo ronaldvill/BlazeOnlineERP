@@ -129,6 +129,7 @@ class StripeController(http.Controller):
             tx.payment_token_id = payment_token_id
             response = tx._create_blzpinpay_charge(acquirer_ref=payment_token_id.acquirer_ref, email=blzpinpay_token['email'])
         else:
+            _logger.info('rtv: false no create payment.token?')  # debug  
             response = tx._create_blzpinpay_charge(tokenid=blzpinpay_token['id'], email=blzpinpay_token['email'])
         
         _logger.info('Stripe: entering form_feedback with post data %s', pprint.pformat(response))
