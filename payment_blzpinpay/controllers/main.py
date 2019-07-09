@@ -118,12 +118,14 @@ class StripeController(http.Controller):
  
         blzpinpay_token = customer_object['response']['token']
         response = None
+        _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', pprint.pformat(tx.type), pprint.pformat(tx.partner_id))  # debug  
         if tx.type == 'form_save' and tx.partner_id:
             payment_token_id = request.env['payment.token'].sudo().create({
                 'acquirer_id': tx.acquirer_id.id,
                 'partner_id': tx.partner_id.id,
                 'blzpinpay_token': blzpinpay_token
             })
+            _logger.info('rtv: payment_token_id [%s]', pprint.pformat(payment_token_id))  # debug  
             tx.payment_token_id = payment_token_id
             response = tx._create_blzpinpay_charge(acquirer_ref=payment_token_id.acquirer_ref, email=blzpinpay_token['email'])
         else:
