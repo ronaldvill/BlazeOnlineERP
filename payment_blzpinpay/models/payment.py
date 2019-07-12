@@ -312,22 +312,22 @@ class PaymentTokenBlzPinpay(models.Model):
         _logger.info('rtv: customer url %s', pprint.pformat(url_customer))
 
         customer_params = {
-            'source': token['id'],
+            'source': token['token'],
             'description': description or token["card"]["name"]
         }
 
-        r = requests.post(url_customer,
-                        auth=(payment_acquirer.blzpinpay_au_secret_key, ''),
-                        params=customer_params)
-        customer = r.json()
+        # r = requests.post(url_customer,
+        #                 auth=(payment_acquirer.blzpinpay_au_secret_key, ''),
+        #                 params=customer_params)
+        # customer = r.json()
 
-        if customer.get('error'):
-            _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
-            raise Exception(customer['error']['message'])
+        # if customer.get('error'):
+        #     _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
+        #     raise Exception(customer['error']['message'])
 
         values = {
             'acquirer_ref': customer['id'],
-            'name': 'XXXXXXXXXXXX%s - %s' % (token['card']['last4'], customer_params["description"])
+            'name': '%s - %s' % (token['card']['display_number'], customer_params["description"])
         }
 
         return values

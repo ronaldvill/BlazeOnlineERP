@@ -112,13 +112,13 @@ class BlzPinpayController(http.Controller):
             customer["card_token"] = post['card_token']
             customers = requests.post(url + '/1/customers/', params=customer,
                                             auth=(api_key, " "))
-            customer_object = json.loads(customers.text)
+            customer_object = customers.json()
             _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug  
         else:
             _logger.info('no "card_token" detected from pinpayment response')  # debug            
             raise werkzeug.exceptions.NotFound()
  
-        blzpinpay_token = customer_object['response']['token']
+        blzpinpay_token = customer_object
         response = None
         _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug 
         _logger.info('rtv: env payment.token [%s]', pprint.pformat(request.env['payment.token']))  # debug             
