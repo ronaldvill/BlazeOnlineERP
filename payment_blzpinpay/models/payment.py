@@ -256,6 +256,7 @@ class PaymentTokenBlzPinpay(models.Model):
 
     @api.model
     def blzpinpay_create(self, values):
+        _logger.info('rtv: at blzpinpay_create()')  # debug             
         token = values.get('blzpinpay_token')
         description = None
         payment_acquirer = self.env['payment.acquirer'].browse(values.get('acquirer_id'))
@@ -292,6 +293,7 @@ class PaymentTokenBlzPinpay(models.Model):
 
 
     def _blzpinpay_create_customer(self, token, description=None, acquirer_id=None):
+        _logger.info('rtv: at _blzpinpay_create_customer()')  # debug             
         if token.get('error'):
             _logger.error('payment.token.blzpinpay_create_customer: Token error:\n%s', pprint.pformat(token['error']))
             raise Exception(token['error']['message'])
