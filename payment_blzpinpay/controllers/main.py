@@ -120,7 +120,8 @@ class BlzPinpayController(http.Controller):
  
         blzpinpay_token = customer_object['response']['token']
         response = None
-        _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug  
+        _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug 
+        _logger.info('rtv: env payment.token [%s]', pprint.pformat(request.env['payment.token']))  # debug             
         if tx.type == 'form_save' and tx.partner_id:
             payment_token_id = request.env['payment.token'].sudo().create({
                 'acquirer_id': tx.acquirer_id.id,
