@@ -52,7 +52,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             return provider_form.find('input[name="' + name + '"]').val();
         }
 
-        var acquirer_id = parseInt(provider_form.find('#acquirer_stripe').val());
+        var acquirer_id = parseInt(provider_form.find('#acquirer_blzpinpay').val());
         var amount = parseFloat(get_input_value("amount") || '0.0');
         var currency = get_input_value("currency");
         var email = get_input_value("email");
@@ -63,10 +63,10 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             acquirer_id: acquirer_id,
             access_token: access_token,
         }).then(function(data) {
-            var $pay_stripe = $('#pay_stripe').detach();
+            var $pay_blzpinpay = $('#pay_blzpinpay').detach();
             try { provider_form[0].innerHTML = data; } catch (e) {}
             // Restore 'Pay Now' button HTML since data might have changed it.
-            $(provider_form[0]).find('#pay_stripe').replaceWith($pay_stripe);
+            $(provider_form[0]).find('#pay_blzpinpay').replaceWith($pay_blzpinpay);
         }).done(function () {
             var $_dialog = $('<div style="z-index: 2147483661;display: block;background: rgba(0, 0, 0, 0.5);border: 0px none transparent;overflow: hidden auto;visibility: visible;margin: 0px;padding: 0px;-webkit-tap-highlight-color: transparent;position: fixed;left: 0px;top: 0px;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;"></div>');
             var $_dialog_container = $(['<div class="inner-content" style="width: 400px;height: 500px;background: #fff;">',

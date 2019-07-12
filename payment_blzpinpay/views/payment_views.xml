@@ -16,7 +16,7 @@
             </xpath>
             <xpath expr='//group[@name="acquirer_config"]' position='after'>
                 <group attrs="{'invisible': [('provider', '!=', 'blzpinpay')]}">
-                    <field name="stripe_image_url"/>
+                    <field name="blzpinpay_image_url"/>
                 </group>
             </xpath>
         </field>
