@@ -260,7 +260,7 @@ class PaymentTokenBlzPinpay(models.Model):
         token = values.get('blzpinpay_token')
         description = None
         payment_acquirer = self.env['payment.acquirer'].browse(values.get('acquirer_id'))
-        # when asking to create a token on BlzPinpay servers
+        # when asking to create a token on BlzPinpay servers, create card_token
         if values.get('cc_number'):
             url_token = 'https://%s/tokens' % payment_acquirer._get_pinpayment_api_url()
             _logger.info('rtv: token url %s', pprint.pformat(url_token))
@@ -294,7 +294,7 @@ class PaymentTokenBlzPinpay(models.Model):
 
     def _blzpinpay_create_customer(self, token, description=None, acquirer_id=None):
         _logger.info('rtv: at _blzpinpay_create_customer()')  # debug          
-        _logger.info('rtv: token [%s]', pprint.pformat(token))
+        _logger.info('rtv: token [%s], desc[%s]', pprint.pformat(token), pprint.pformat(description))
         if token.get('error'):
             _logger.error('payment.token.blzpinpay_create_customer: Token error:\n%s', pprint.pformat(token['error']))
             raise Exception(token['error']['message'])
@@ -308,22 +308,29 @@ class PaymentTokenBlzPinpay(models.Model):
             raise Exception('We are unable to process your credit card information.')
 
         payment_acquirer = self.env['payment.acquirer'].browse(acquirer_id or self.acquirer_id.id)
-        url_customer = 'https://%s/customers' % payment_acquirer._get_pinpayment_api_url()
+        url_customer = 'https://%s/1/customers/' % payment_acquirer._get_pinpayment_api_url()
         _logger.info('rtv: customer url %s', pprint.pformat(url_customer))
 
         customer_params = {
-            'source': token['token'],
-            'description': description or token["card"]["name"]
+            'email': token['email'],
+            'card_token': token['card_token']
         }
 
-        # r = requests.post(url_customer,
-        #                 auth=(payment_acquirer.blzpinpay_au_secret_key, ''),
-        #                 params=customer_params)
-        # customer = r.json()
+        if token['currency'] == 'AUD':
+            api_key = payment_acquirer.blzpinpay_au_secret_key
+        else:
+            api_key = payment_acquirer.blzpinpay_us_secret_key
+        _logger.info('rtv: currency [%s], api_key[%s]', currency, api_key)  # debug  
+    
+        r = requests.post(url_customer,
+                        auth=(api_key, ''),
+                        params=customer_params)
+        customer = r.json()
+        _logger.info('rtv: customer_object: %s', pprint.pformat(customer))  # debug  
 
-        # if customer.get('error'):
-        #     _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
-        #     raise Exception(customer['error']['message'])
+        if customer.get('error'):
+            _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
+            raise Exception(customer['error']['message'])
 
         values = {
             'acquirer_ref': customer['id'],

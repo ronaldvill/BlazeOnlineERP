@@ -69,6 +69,7 @@ class BlzPinpayController(http.Controller):
         '/payment/blzpinpay/create_charge',
     ], type='http', auth='none', csrf=False)
     def blzpinpay_create_charge(self, **post):
+        _logger.info('rtv: at blzpinpay_create_charge()')  # debug          
         _logger.info(post)  # debug
 
         """Expects the result from the user input from pin.v2.js popup"""
@@ -76,53 +77,60 @@ class BlzPinpayController(http.Controller):
         tx = None
         if post.get('tx_ref'):
             tx = TX.sudo().search([('reference', '=', post['tx_ref'])])
-            _logger.info('rtv: 1. tx: %s', pprint.pformat(tx))  # debug  
         if not tx:
             tx_id = (post.get('tx_id') or request.session.get('sale_transaction_id') or
                      request.session.get('website_payment_tx_id'))
             tx = TX.sudo().browse(int(tx_id))
-            _logger.info('rtv: 2. tx: %s', pprint.pformat(tx))  # debug  
         if not tx:
             raise werkzeug.exceptions.NotFound()
- 
-        """ create pin customer af from card token """
-        if post['card_token']:
-            _logger.info('Card token passed: %s', post['card_token'])  # debug
-            acquirer = request.env['payment.acquirer'].search(
-                [('provider', '=', 'blzpinpay')]
-            )
-            """ Gets the details of charge using card_token from pinpayments 
-                for further process """
-            _logger.info('Acquirer environment: %s',acquirer.environment)  # debug
-            if acquirer.environment == 'test':
-                url = 'https://test-api.pin.net.au'
-            else:
-                url = 'https://api.pin.net.au'
+        _logger.info('rtv: tx: %s', pprint.pformat(tx))  # debug  
 
-            if post['currency'] == 'AUD':
-                api_key = acquirer.blzpinpay_au_secret_key
-            else:
-                api_key = acquirer.blzpinpay_us_secret_key
-            
-            _logger.info('URL: %s', url)  # debug
+#         """ create pin customer from card token """
+#         if post['card_token']:
+#             _logger.info('Card token passed: %s', post['card_token'])  # debug
+#             acquirer = request.env['payment.acquirer'].search(
+#                 [('provider', '=', 'blzpinpay')]
+#             )
+#             """ Gets the details of charge using card_token from pinpayments 
+#                 for further process """
+#             _logger.info('Acquirer environment: %s',acquirer.environment)  # debug
+#             if acquirer.environment == 'test':
+#                 url = 'https://test-api.pin.net.au'
+#             else:
+#                 url = 'https://api.pin.net.au'
+# 
+#             if post['currency'] == 'AUD':
+#                 api_key = acquirer.blzpinpay_au_secret_key
+#             else:
+#                 api_key = acquirer.blzpinpay_us_secret_key
+#             
+#             _logger.info('URL: %s', url)  # debug
+# 
+#             # Creating the customer using the card_token
+#             customer = dict()
+#             customer["email"] = post["email"]
+#             customer["card_token"] = post['card_token']
+#             customers = requests.post(url + '/1/customers/', params=customer,
+#                                             auth=(api_key, " "))
+#             customer_object = customers.json()
+#             _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug  
+#         else:
+#             _logger.info('no "card_token" detected from pinpayment response')  # debug            
+#             raise werkzeug.exceptions.NotFound()
 
-            # Creating the customer using the card_token
-            customer = dict()
-            customer["email"] = post["email"]
-            customer["card_token"] = post['card_token']
-            customers = requests.post(url + '/1/customers/', params=customer,
-                                            auth=(api_key, " "))
-            customer_object = customers.json()
-            _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug  
-        else:
-            _logger.info('no "card_token" detected from pinpayment response')  # debug            
-            raise werkzeug.exceptions.NotFound()
- 
-        blzpinpay_token = customer_object
         response = None
         _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug 
         _logger.info('rtv: env payment.token [%s]', pprint.pformat(request.env['payment.token']))  # debug             
         if tx.type == 'form_save' and tx.partner_id:
+             # Creating the card token object using the pin card_token response
+            blzpinpay_token = dict()
+            blzpinpay_token["email"] = post["email"]
+            blzpinpay_token["id"] = post['card_token']
+            blzpinpay_token["card_token"] = post['card_token']
+            blzpinpay_token["currency"] = post['currency']
+            blzpinpay_token['object'] = 'token'
+            blzpinpay_token['type'] = 'card'
+
             payment_token_id = request.env['payment.token'].sudo().create({
                 'acquirer_id': tx.acquirer_id.id,
                 'partner_id': tx.partner_id.id,
@@ -132,6 +140,7 @@ class BlzPinpayController(http.Controller):
             tx.payment_token_id = payment_token_id
             response = tx._create_blzpinpay_charge(acquirer_ref=payment_token_id.acquirer_ref, email=blzpinpay_token['email'])
         else:
+            blzpinpay_token = post['token']
             _logger.info('rtv: tokenid [%s], email [%s]', blzpinpay_token['id'], blzpinpay_token['email'])  # debug  
             response = tx._create_blzpinpay_charge(tokenid=blzpinpay_token['id'], email=blzpinpay_token['email'] )
         
