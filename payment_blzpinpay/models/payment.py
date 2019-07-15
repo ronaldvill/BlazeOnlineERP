@@ -63,10 +63,9 @@ class PaymentAcquirerBlzPinpay(models.Model):
 
     @api.model
     def _get_pinpayment_api_url(self):
-        # https://api.pin.net.au
-        # https://test-api.pin.net.au
-        _logger.info('rtv: current environment --> [%s]', self.acquirer_id.environment)              
-        if self.acquirer_id.environment == 'test':
+        payment_acquirer = self.env['payment.acquirer'].search([('provider', '=', 'blzpinpay')])
+        _logger.info('rtv: current environment --> [%s]', payment_acquirer.environment)              
+        if payment_acquirer.environment == 'test':
             url = 'https://test-api.pin.net.au'
         else:
             url = 'https://api.pin.net.au'
