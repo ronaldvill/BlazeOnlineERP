@@ -319,7 +319,7 @@ class PaymentTokenBlzPinpay(models.Model):
             api_key = payment_acquirer.blzpinpay_au_secret_key
         else:
             api_key = payment_acquirer.blzpinpay_us_secret_key
-        _logger.info('rtv: currency [%s], api_key[%s]', currency, api_key)  # debug  
+        _logger.info('rtv: currency [%s], api_key[%s]', token['currency'], api_key)  # debug  
     
         r = requests.post(url_customer,
                         auth=(api_key, ''),
