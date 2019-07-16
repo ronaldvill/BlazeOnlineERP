@@ -330,7 +330,8 @@ class PaymentTokenBlzPinpay(models.Model):
             _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
             raise Exception(customer['error']['message'])
 
-        card = customer.get('card')
+        card_obj = customer.get('card')
+        _logger.info('rtv: card_obj: %s', pprint.pformat(card_obj))  # debug  
         values = {
             'acquirer_ref': card.get('customer_token'),
             'name': '%s - %s' % (token['card']['display_number'], customer_params["description"])
