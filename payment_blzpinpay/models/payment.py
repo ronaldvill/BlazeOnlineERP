@@ -331,8 +331,9 @@ class PaymentTokenBlzPinpay(models.Model):
             raise Exception(customer['error']['message'])
 
         values = {
-            'acquirer_ref': customer['id'],
+            'acquirer_ref': customer['token'],
             'name': '%s - %s' % (token['card']['display_number'], customer_params["description"])
         }
+        _logger.info('rtv: return values [%s]', pprint.pformat(values))
 
         return values
