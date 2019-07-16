@@ -332,7 +332,7 @@ class PaymentTokenBlzPinpay(models.Model):
 
         card = customer.get('card')
         values = {
-            'acquirer_ref': card['customer_token'],
+            'acquirer_ref': card.get('customer_token'),
             'name': '%s - %s' % (token['card']['display_number'], customer_params["description"])
         }
         _logger.info('rtv: return values [%s]', pprint.pformat(values))
