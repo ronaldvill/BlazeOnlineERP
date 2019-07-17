@@ -133,11 +133,12 @@ class PaymentTransactionBlzPinpay(models.Model):
             # post['customer_token'] = customer_object['response']['token'] 
         _logger.info('charge_params: %s', pprint.pformat(charge_params))  # debug    
 
+        payment_acquirer = self.env['payment.acquirer'].browse(acquirer_id or self.acquirer_id.id)
         _logger.info('rtv currency: %s', self.currency_id.name)  # debug
         if self.currency_id.name == 'AUD':
-            api_key = acquirer.blzpinpay_au_secret_key
+            api_key = payment_acquirer.blzpinpay_au_secret_key
         else:
-            api_key = acquirer.blzpinpay_us_secret_key
+            api_key = payment_acquirer.blzpinpay_us_secret_key
         _logger.info('rtv api_key: %s', api_key)  # debug
 
         _logger.info('_create_blzpinpay_charge: Sending values to URL %s, values:\n%s', api_url_charge, pprint.pformat(charge_params))
