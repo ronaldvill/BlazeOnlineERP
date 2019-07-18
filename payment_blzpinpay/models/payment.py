@@ -222,6 +222,7 @@ class PaymentTransactionBlzPinpay(models.Model):
             return True
 
         status = tree.get('status')
+        _logger.info('rtv: status [%s]', status)                
         if status == 'succeeded':
             self.write({
                 'date': fields.datetime.now(),
