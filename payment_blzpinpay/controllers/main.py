@@ -85,39 +85,6 @@ class BlzPinpayController(http.Controller):
             raise werkzeug.exceptions.NotFound()
         _logger.info('rtv: tx: %s', pprint.pformat(tx))  # debug  
 
-#         """ create pin customer from card token """
-#         if post['card_token']:
-#             _logger.info('Card token passed: %s', post['card_token'])  # debug
-#             acquirer = request.env['payment.acquirer'].search(
-#                 [('provider', '=', 'blzpinpay')]
-#             )
-#             """ Gets the details of charge using card_token from pinpayments 
-#                 for further process """
-#             _logger.info('Acquirer environment: %s',acquirer.environment)  # debug
-#             if acquirer.environment == 'test':
-#                 url = 'https://test-api.pin.net.au'
-#             else:
-#                 url = 'https://api.pin.net.au'
-# 
-#             if post['currency'] == 'AUD':
-#                 api_key = acquirer.blzpinpay_au_secret_key
-#             else:
-#                 api_key = acquirer.blzpinpay_us_secret_key
-#             
-#             _logger.info('URL: %s', url)  # debug
-# 
-#             # Creating the customer using the card_token
-#             customer = dict()
-#             customer["email"] = post["email"]
-#             customer["card_token"] = post['card_token']
-#             customers = requests.post(url + '/1/customers/', params=customer,
-#                                             auth=(api_key, " "))
-#             customer_object = customers.json()
-#             _logger.info('customer_object: %s', pprint.pformat(customer_object))  # debug  
-#         else:
-#             _logger.info('no "card_token" detected from pinpayment response')  # debug            
-#             raise werkzeug.exceptions.NotFound()
-
         response = None
         _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug 
         _logger.info('rtv: env payment.token [%s]', pprint.pformat(request.env['payment.token']))  # debug             

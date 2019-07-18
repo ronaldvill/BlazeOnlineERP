@@ -121,11 +121,8 @@ class PaymentTransactionBlzPinpay(models.Model):
             #             post['amount'] *= 100
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
             'currency': self.currency_id.name,
-            'metadata[reference]': self.reference,
             'description': self.reference,
         }
-        _logger.info('charge_params: %s', pprint.pformat(charge_params))  # debug    
-        _logger.info('acquirer_ref [%s], tokenid [%s], email [%s], ', acquirer_ref, tokenid, email)  # debug    
 
         if acquirer_ref:
             # charge_params['customer'] = acquirer_ref
@@ -135,7 +132,6 @@ class PaymentTransactionBlzPinpay(models.Model):
         if tokenid:
             charge_params['customer_token'] = str(tokenid)
             # post['customer_token'] = customer_object['response']['token'] 
-        _logger.info('charge_params: %s', pprint.pformat(charge_params))  # debug    
 
         payment_acquirer = self.env['payment.acquirer'].browse(self.acquirer_id.id)
         _logger.info('rtv currency: %s', self.currency_id.name)  # debug
