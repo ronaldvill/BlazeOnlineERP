@@ -118,6 +118,7 @@ class PaymentTransactionBlzPinpay(models.Model):
         charge_params = {
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
             'currency': self.currency_id.name,
+            'metadata[reference]': self.reference,
             'description': self.reference,
         }
 
@@ -178,6 +179,8 @@ class PaymentTransactionBlzPinpay(models.Model):
 
     @api.model
     def _blzpinpay_form_get_tx_from_data(self, data):
+        _logger.info('rtv: at _blzpinpay_form_get_tx_from_data()')  # debug          
+
         """ Given a data dict coming from BlzPinpay, verify it and find the related
         transaction record. """
         reference = data.get('metadata', {}).get('reference')
