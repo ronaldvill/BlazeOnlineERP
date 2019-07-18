@@ -124,8 +124,12 @@ class PaymentTransactionBlzPinpay(models.Model):
             'metadata[reference]': self.reference,
             'description': self.reference,
         }
+        _logger.info('charge_params: %s', pprint.pformat(charge_params))  # debug    
+        _logger.info('acquirer_ref [%s], tokenid [%s], email [%s], ', acquirer_ref, tokenid, email)  # debug    
+
         if acquirer_ref:
-            charge_params['customer'] = acquirer_ref
+            # charge_params['customer'] = acquirer_ref
+            charge_params['customer_token'] = acquirer_ref
         if email:
             charge_params['email'] = email.strip()
         if tokenid:
