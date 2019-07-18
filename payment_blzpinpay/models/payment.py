@@ -289,7 +289,7 @@ class PaymentTokenBlzPinpay(models.Model):
         # pop credit card info to info sent to create
         for field_name in ["cc_number", "cvc", "cc_holder_name", "cc_expiry", "cc_brand", "blzpinpay_token"]:
             values.pop(field_name, None)
-        return res
+        return res.get('response')
 
 
     def _blzpinpay_create_customer(self, token, description=None, acquirer_id=None):
@@ -326,7 +326,7 @@ class PaymentTokenBlzPinpay(models.Model):
                         auth=(api_key, ''),
                         params=customer_params)
         customer = r.json()
-        _logger.info('rtv: customer_object: %s', pprint.pformat(customer))  # debug  
+        _logger.info('rtv: customer_object: %s', pprint.pformat(customer.get('response')))  # debug  
 
         if customer.get('error'):
             _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
