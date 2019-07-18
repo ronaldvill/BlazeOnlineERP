@@ -221,12 +221,12 @@ class PaymentTransactionBlzPinpay(models.Model):
             _logger.info('BlzPinpay: trying to validate an already validated tx (ref %s)', self.reference)
             return True
 
-        status = tree.get('status')
+        status = tree.get('status_message') or tree.get('status')
         _logger.info('rtv: status [%s]', status)                
-        if status == 'succeeded':
+        if status == 'Success' or status == 'succeeded':
             self.write({
                 'date': fields.datetime.now(),
-                'acquirer_reference': tree.get('id'),
+                'acquirer_reference': tree.get('token'),
             })
             self._set_transaction_done()
             self.execute_callback()
@@ -238,7 +238,7 @@ class PaymentTransactionBlzPinpay(models.Model):
             _logger.warn(error)
             self.sudo().write({
                 'state_message': error,
-                'acquirer_reference': tree.get('id'),
+                'acquirer_reference': tree.get('token'),
                 'date': fields.datetime.now(),
             })
             self._set_transaction_cancel()
