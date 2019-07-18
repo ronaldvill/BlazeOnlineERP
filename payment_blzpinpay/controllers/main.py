@@ -83,11 +83,10 @@ class BlzPinpayController(http.Controller):
             tx = TX.sudo().browse(int(tx_id))
         if not tx:
             raise werkzeug.exceptions.NotFound()
-        _logger.info('rtv: tx: %s', pprint.pformat(tx))  # debug  
+        _logger.info('rtv: tx [%s]', pprint.pformat(tx))  # debug  
 
         response = None
         _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug 
-        _logger.info('rtv: env payment.token [%s]', pprint.pformat(request.env['payment.token']))  # debug             
         if tx.type == 'form_save' and tx.partner_id:
              # Creating the card token object using the pin card_token response
             blzpinpay_token = dict()

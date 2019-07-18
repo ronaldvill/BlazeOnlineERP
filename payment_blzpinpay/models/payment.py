@@ -115,10 +115,7 @@ class PaymentTransactionBlzPinpay(models.Model):
 
     def _create_blzpinpay_charge(self, acquirer_ref=None, tokenid=None, email=None):
         api_url_charge = 'https://%s/1/charges' % (self.acquirer_id._get_pinpayment_api_url())
-        _logger.info('rtv: charge url %s', pprint.pformat(api_url_charge))
         charge_params = {
-            # do we need: post["amount"] = int(float(post["amount"]))
-            #             post['amount'] *= 100
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
             'currency': self.currency_id.name,
             'description': self.reference,
@@ -134,12 +131,11 @@ class PaymentTransactionBlzPinpay(models.Model):
             # post['customer_token'] = customer_object['response']['token'] 
 
         payment_acquirer = self.env['payment.acquirer'].browse(self.acquirer_id.id)
-        _logger.info('rtv currency: %s', self.currency_id.name)  # debug
         if self.currency_id.name == 'AUD':
             api_key = payment_acquirer.blzpinpay_au_secret_key
         else:
             api_key = payment_acquirer.blzpinpay_us_secret_key
-        _logger.info('rtv api_key: %s', api_key)  # debug
+        _logger.info('rtv: currency [%s], api_key [%s]', self.currency_id.name,  api_key)  # debug
 
         _logger.info('_create_blzpinpay_charge: Sending values to URL %s, values:\n%s', api_url_charge, pprint.pformat(charge_params))
         r = requests.post(api_url_charge,
