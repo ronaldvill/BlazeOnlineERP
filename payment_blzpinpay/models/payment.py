@@ -180,10 +180,12 @@ class PaymentTransactionBlzPinpay(models.Model):
     @api.model
     def _blzpinpay_form_get_tx_from_data(self, data):
         _logger.info('rtv: at _blzpinpay_form_get_tx_from_data()')  # debug          
+        _logger.info('rtv: data [%s]', pprint.pformat(data))
 
         """ Given a data dict coming from BlzPinpay, verify it and find the related
         transaction record. """
         reference = data.get('metadata', {}).get('reference')
+        _logger.info('rtv: reference [%s]', pprint.pformat(reference))        
         if not reference:
             blzpinpay_error = data.get('error', {}).get('message', '')
             _logger.error('BlzPinpay: invalid reply received from BlzPinpay API, looks like '
