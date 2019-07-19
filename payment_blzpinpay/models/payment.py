@@ -42,6 +42,7 @@ class PaymentAcquirerBlzPinpay(models.Model):
 
     @api.multi
     def blzpinpay_form_generate_values(self, tx_values):
+        _logger.info('rtv: at blzpinpay_form_generate_values()')  # debug
         self.ensure_one()
         blzpinpay_tx_values = dict(tx_values)
         temp_blzpinpay_tx_values = {
@@ -73,6 +74,7 @@ class PaymentAcquirerBlzPinpay(models.Model):
     
     @api.model
     def blzpinpay_s2s_form_process(self, data):
+        _logger.info('rtv: at blzpinpay_s2s_form_process()')  # debug
         payment_token = self.env['payment.token'].sudo().create({
             'cc_number': data['cc_number'],
             'cc_holder_name': data['cc_holder_name'],
@@ -86,6 +88,7 @@ class PaymentAcquirerBlzPinpay(models.Model):
 
     @api.multi
     def blzpinpay_s2s_form_validate(self, data):
+        _logger.info('rtv: at blzpinpay_s2s_form_validate()')  # debug
         self.ensure_one()
 
         # mandatory fields
@@ -95,6 +98,7 @@ class PaymentAcquirerBlzPinpay(models.Model):
         return True
 
     def _get_feature_support(self):
+        _logger.info('rtv: at _get_feature_support()')  # debug
         """Get advanced feature support by provider.
 
         Each provider should add its technical in the corresponding
@@ -114,6 +118,7 @@ class PaymentTransactionBlzPinpay(models.Model):
     _inherit = 'payment.transaction'
 
     def _create_blzpinpay_charge(self, acquirer_ref=None, tokenid=None, email=None):
+        _logger.info('rtv: at _create_blzpinpay_charge()')  # debug
         api_url_charge = 'https://%s/1/charges' % (self.acquirer_id._get_pinpayment_api_url())
         charge_params = {
             'amount': int(self.amount if self.currency_id.name in INT_CURRENCIES else float_round(self.amount * 100, 2)),
@@ -153,12 +158,14 @@ class PaymentTransactionBlzPinpay(models.Model):
 
     @api.multi
     def blzpinpay_s2s_do_transaction(self, **kwargs):
+        _logger.info('rtv: at blzpinpay_s2s_do_transaction()')  # debug
         self.ensure_one()
         result = self._create_blzpinpay_charge(acquirer_ref=self.payment_token_id.acquirer_ref, email=self.partner_email)
         return self._blzpinpay_s2s_validate_tree(result)
 
 
     def _create_blzpinpay_refund(self):
+        _logger.info('rtv: at _create_blzpinpay_refund()')  # debug
         api_url_refund = 'https://%s/refunds' % (self.acquirer_id._get_pinpayment_api_url())
         _logger.info('rtv: refund url %s', pprint.pformat(api_url_refund))
 
@@ -178,6 +185,7 @@ class PaymentTransactionBlzPinpay(models.Model):
 
     @api.multi
     def blzpinpay_s2s_do_refund(self, **kwargs):
+        _logger.info('rtv: at blzpinpay_s2s_do_refund()')  # debug
         self.ensure_one()
         result = self._create_blzpinpay_refund()
         return self._blzpinpay_s2s_validate_tree(result)
@@ -267,7 +275,7 @@ class PaymentTokenBlzPinpay(models.Model):
         description = None
         payment_acquirer = self.env['payment.acquirer'].browse(values.get('acquirer_id'))
         # when asking to create a token on BlzPinpay servers, create card_token
-        if values.get('cc_number'):
+        if values.get('cc_number'): 
             url_token = 'https://%s/tokens' % payment_acquirer._get_pinpayment_api_url()
             _logger.info('rtv: token url %s', pprint.pformat(url_token))
 

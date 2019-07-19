@@ -16,6 +16,7 @@ class BlzPinpayController(http.Controller):
 
     @http.route(['/payment/blzpinpay/s2s/create_json'], type='json', auth='public')
     def blzpinpay_s2s_create_json(self, **kwargs):
+        _logger.info('rtv: at blzpinpay_s2s_create_json()')  # debug
         acquirer_id = int(kwargs.get('acquirer_id'))
         acquirer = request.env['payment.acquirer'].browse(acquirer_id)
         if not kwargs.get('partner_id'):
@@ -24,6 +25,7 @@ class BlzPinpayController(http.Controller):
 
     @http.route(['/payment/blzpinpay/s2s/create'], type='http', auth='public')
     def blzpinpay_s2s_create(self, **post):
+        _logger.info('rtv: at blzpinpay_s2s_create()')  # debug
         acquirer_id = int(post.get('acquirer_id'))
         acquirer = request.env['payment.acquirer'].browse(acquirer_id)
         error = None
@@ -41,6 +43,7 @@ class BlzPinpayController(http.Controller):
 
     @http.route(['/payment/blzpinpay/s2s/create_json_3ds'], type='json', auth='public', csrf=False)
     def blzpinpay_s2s_create_json_3ds(self, verify_validity=False, **kwargs):
+        _logger.info('rtv: at blzpinpay_s2s_create_json_3ds()')  # debug          
         if not kwargs.get('partner_id'):
             kwargs = dict(kwargs, partner_id=request.env.user.partner_id.id)
         token = request.env['payment.acquirer'].browse(int(kwargs.get('acquirer_id'))).s2s_process(kwargs)
