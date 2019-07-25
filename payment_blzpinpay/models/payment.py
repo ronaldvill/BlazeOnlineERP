@@ -349,6 +349,6 @@ class PaymentTokenBlzPinpay(models.Model):
             'acquirer_ref': customer['response']['card']['customer_token'],
             'name': '%s - %s' % (customer['response']['card']['display_number'].replace("-",""), desc_str)
         }
-        _logger.info('rtv: return values [%s]',  pprint.pformat(values))
+        _logger.info('rtv: return values [%s].', pprint.pformat(values))
 
         return values
