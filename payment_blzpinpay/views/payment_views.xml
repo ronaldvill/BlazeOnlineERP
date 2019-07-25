@@ -11,7 +11,6 @@
                     <field name="blzpinpay_au_publishable_key" password="True"/>
                     <field name="blzpinpay_us_secret_key" password="True"/>
                     <field name="blzpinpay_us_publishable_key" password="True"/>
-                    <field name="pinpayments_url" password="True"/>                   
                 </group>
             </xpath>
             <xpath expr='//group[@name="acquirer_config"]' position='after'>

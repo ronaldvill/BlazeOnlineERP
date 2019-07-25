@@ -32,8 +32,6 @@ class PaymentAcquirerBlzPinpay(models.Model):
                                          groups='base.group_user')
     blzpinpay_us_publishable_key = fields.Char(required_if_provider='blzpinpay', 
                                               groups='base.group_user')
-    pinpayments_url = fields.Char(required_if_provider='blzpinpay',
-                                  groups='base.group_user')
     
     blzpinpay_image_url = fields.Char(
         "Checkout Image URL", groups='base.group_user',
