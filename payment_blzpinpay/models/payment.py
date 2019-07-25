@@ -344,7 +344,7 @@ class PaymentTokenBlzPinpay(models.Model):
             _logger.error('payment.token.blzpinpay_create_customer: Customer error:\n%s', pprint.pformat(customer['error']))
             raise Exception(customer['error']['message'])
 
-        desc_str = description or customer['response']['card']['name']
+        desc_str = customer['response']['card']['name'] or description
         values = {
             'acquirer_ref': customer['response']['card']['customer_token'],
             'name': '%s - %s' % (customer['response']['card']['display_number'].replace("-",""), desc_str)
