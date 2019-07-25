@@ -16,7 +16,6 @@
             <field name="blzpinpay_au_publishable_key">dummy</field>
             <field name="blzpinpay_us_secret_key">dummy</field>
             <field name="blzpinpay_us_publishable_key">dummy</field>
-            <field name="pinpayments_url">dummy</field>            
         </record>
     </data>
 </odoo>
