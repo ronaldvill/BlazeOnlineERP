@@ -74,7 +74,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             var $_emailField = "";
             if($('input[name="email"]').val() == "") {
                 $_emailField = [
-                    "<input class="email" id='cc-email' type='text'>",
+                    "<input class='email' id='cc-email' type='text'>",
                 ].join("");
             }
             var $_form = $([
