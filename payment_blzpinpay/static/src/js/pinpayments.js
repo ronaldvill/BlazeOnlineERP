@@ -79,7 +79,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                 ].join("");
             }
             var $_form = $([
-            	"<div class="card-js">",
+            	"<div class='card-js'>",
 	                "<form action='/payment/blzpinpay/create_charge' class='pin' method='post'>",
 	                    //"<fieldset>",
 	                    "<legend>Payment</legend>",
