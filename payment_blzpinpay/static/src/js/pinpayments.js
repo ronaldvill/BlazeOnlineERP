@@ -95,7 +95,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
 		                    // "<label for='cc-cvc'>CVC</label>",
 		                    "<input class='cvc' id='cc-cvc'>",
 		                    // "</fieldset>",
-	                    "</div>"
+	                    "</div>",
 	                    "<input type='submit' value='Pay now'></input>",
                     "</form>"].join(''))
             var submitButton = $_form.find(":submit");
