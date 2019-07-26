@@ -143,7 +143,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     $('input[name="currency"]').appendTo($_form);
                     
                     $.post('/payment/blzpinpay/create_charge', $_form.serialize(), function(result) {
-                    	console.log(result)
+                    	window.location.href = result;
                     })
 
                     console.log(card);
