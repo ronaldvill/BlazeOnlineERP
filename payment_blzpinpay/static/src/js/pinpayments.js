@@ -79,25 +79,25 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                 ].join("");
             }
             var $_form = $([
-            	"<div class='card-js'>",
 	                "<form action='/payment/blzpinpay/create_charge' class='pin' method='post'>",
-	                    //"<fieldset>",
-	                    "<legend>Payment</legend>",
-	                    // "<label for='cc-number'>Credit Card Number</label>",
-	                    "<input class='card-number' id='cc-number' type='text'>",
-	                    // "<label for='cc-name'>Name on Card</label>",
-	                    "<input class='name' id='cc-name' type='text'>",
-	                    $_emailField,
-	                    // "<label for='cc-expiry-month'>Expiry Month</label>",
-	                    "<input class='expiry-month' id='cc-expiry-month'>",
-	                    // "<label for='cc-expiry-year'>Expiry Year</label>",
-	                    "<input class='expiry-year' id='cc-expiry-year'>",
-	                    // "<label for='cc-cvc'>CVC</label>",
-	                    "<input class='cvc' id='cc-cvc'>",
-	                    // "</fieldset>",
+	                    "<div class='card-js'>",
+		                    //"<fieldset>",
+		                    // "<legend>Payment</legend>",
+		                    // "<label for='cc-number'>Credit Card Number</label>",
+		                    "<input class='card-number' id='cc-number' type='text'>",
+		                    // "<label for='cc-name'>Name on Card</label>",
+		                    "<input class='name' id='cc-name' type='text'>",
+		                    $_emailField,
+		                    // "<label for='cc-expiry-month'>Expiry Month</label>",
+		                    "<input class='expiry-month' id='cc-expiry-month'>",
+		                    // "<label for='cc-expiry-year'>Expiry Year</label>",
+		                    "<input class='expiry-year' id='cc-expiry-year'>",
+		                    // "<label for='cc-cvc'>CVC</label>",
+		                    "<input class='cvc' id='cc-cvc'>",
+		                    // "</fieldset>",
+	                    "</div>"
 	                    "<input type='submit' value='Pay now'></input>",
-                    "</form>",
-                "</div>"].join(''))
+                    "</form>"].join(''))
             var submitButton = $_form.find(":submit");
             var pinApi = new Pin.Api($("input[name='blzpinpay_key']").val(), 'test');
 
@@ -155,6 +155,8 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             $_dialog_container.append($_form)
             $_dialog.append($_dialog_container)
             $_dialog.insertAfter($(provider_form[0]))
+            
+            $('.card-js').CardJs();
         });
     }
 	
