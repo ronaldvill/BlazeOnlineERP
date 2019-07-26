@@ -69,7 +69,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
             $(provider_form[0]).find('#pay_blzpinpay').replaceWith($pay_blzpinpay);
         }).done(function () {
             var $_dialog = $('<div style="z-index: 2147483661;display: block;background: rgba(0, 0, 0, 0.5);border: 0px none transparent;overflow: hidden auto;visibility: visible;margin: 0px;padding: 0px;-webkit-tap-highlight-color: transparent;position: fixed;left: 0px;top: 0px;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;"></div>');
-            var $_dialog_container = $(['<div class="inner-content" style="width: 400px;height: 500px;background: #fff;">',
+            var $_dialog_container = $(['<div class="inner-content" style="width: 400px;height: auto;background: #fff;padding: 2rem;border-radius: 5px;">',
             '</div>'].join(''));
             var $_emailField = "";
             if($('input[name="email"]').val() == "") {
@@ -95,7 +95,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
 		                    "<input class='cvc' id='cc-cvc'>",
 		                    // "</fieldset>",
 	                    "</div>",
-	                    "<input type='submit' value='Pay now'></input>",
+	                    "<input type='submit' value='Pay now' class='btn btn-block btn-gamma button mt-3'></input>",
                     "</form>"].join(''))
             var submitButton = $_form.find(":submit");
             var pinApi = new Pin.Api($("input[name='blzpinpay_key']").val(), 'test');
