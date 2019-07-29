@@ -90,7 +90,7 @@ class BlzPinpayController(http.Controller):
 
         response = None
         _logger.info('rtv: tx.type [%s], tx.partner_id [%s]', tx.type, tx.partner_id)  # debug 
-        if tx.type == 'form_save' and tx.partner_id:
+        if (tx.type == 'form_save' or tx.type == 'form')  and tx.partner_id:
              # Creating the card token object using the pin card_token response
             blzpinpay_token = dict()
             blzpinpay_token["email"] = post["email"]
