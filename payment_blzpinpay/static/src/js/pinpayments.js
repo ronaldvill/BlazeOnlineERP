@@ -145,7 +145,7 @@ odoo.define('payment_blzpinpay.blzpinpay', function(require) {
                     
                      var postData = {
 					  tx_ref: $('input[name="tx_ref"]').val(),
-					  email: $('input#cc-email').val(),
+					  email: $('input[name="email"]').val(),
 					  card_token: $('input[name="card_token"]').val(),
 					  currency: $('input[name="currency"]').val(),
 					  token: $('input[name="token"]').val(),
