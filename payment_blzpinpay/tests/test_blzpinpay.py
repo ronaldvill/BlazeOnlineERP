@@ -5,28 +5,28 @@ from odoo.addons.payment.tests.common import PaymentAcquirerCommon
 from odoo.tools import mute_logger
 
 
-class StripeCommon(PaymentAcquirerCommon):
+class BlzPinpayCommon(PaymentAcquirerCommon):
 
     def setUp(self):
-        super(StripeCommon, self).setUp()
-        self.stripe = self.env.ref('payment_acquirer_blzpinpay')
+        super(BlzPinpayCommon, self).setUp()
+        self.blzpinpay = self.env.ref('payment_acquirer_blzpinpay')
 
 
 @odoo.tests.tagged('post_install', '-at_install', '-standard', 'external')
-class StripeTest(StripeCommon):
+class BlzPinpayTest(BlzPinpayCommon):
 
     def test_10_blzpinpay_s2s(self):
-        self.assertEqual(self.stripe.environment, 'test', 'test without test environment')
+        self.assertEqual(self.blzpinpay.environment, 'test', 'test without test environment')
 
-        # Add Stripe credentials
-        self.stripe.write({
-            'stripe_secret_key': 'sk_test_bldAlqh1U24L5HtRF9mBFpK7',
-            'stripe_publishable_key': 'pk_test_0TKSyYSZS9AcS4keZ2cxQQCW',
+        # Add BlzPinpay credentials
+        self.blzpinpay.write({
+            'blzpinpay_au_secret_key': 'd7rOHP9Eiti6vsKT7AzwEQ',
+            'blzpinpay_au_publishable_key': 'pk_uKTj8kNaN2DtCn4yEsMCrQ',
         })
 
-        # Create payment meethod for Stripe
+        # Create payment meethod for BlzPinpay
         payment_token = self.env['payment.token'].create({
-            'acquirer_id': self.stripe.id,
+            'acquirer_id': self.blzpinpay.id,
             'partner_id': self.buyer_id,
             'cc_number': '4242424242424242',
             'cc_expiry': '02 / 26',
@@ -39,7 +39,7 @@ class StripeTest(StripeCommon):
         tx = self.env['payment.transaction'].create({
             'reference': 'test_ref_%s' % fields.date.today(),
             'currency_id': self.currency_euro.id,
-            'acquirer_id': self.stripe.id,
+            'acquirer_id': self.blzpinpay.id,
             'partner_id': self.buyer_id,
             'payment_token_id': payment_token.id,
             'type': 'server2server',
@@ -48,25 +48,25 @@ class StripeTest(StripeCommon):
         tx.blzpinpay_s2s_do_transaction()
 
         # Check state
-        self.assertEqual(tx.state, 'done', 'Stripe: Transcation has been discarded.')
+        self.assertEqual(tx.state, 'done', 'BlzPinpay: Transcation has been discarded.')
 
     def test_20_blzpinpay_form_render(self):
-        self.assertEqual(self.stripe.environment, 'test', 'test without test environment')
+        self.assertEqual(self.blzpinpay.environment, 'test', 'test without test environment')
 
         # ----------------------------------------
         # Test: button direct rendering
         # ----------------------------------------
 
         # render the button
-        res = self.stripe.render('SO404', 320.0, self.currency_euro.id, values=self.buyer_values).decode('utf-8')
+        res = self.blzpinpay.render('SO404', 320.0, self.currency_euro.id, values=self.buyer_values).decode('utf-8')
         # Generated and received
-        self.assertIn(self.buyer_values.get('partner_email'), res, 'Stripe: email input not found in rendered template')
+        self.assertIn(self.buyer_values.get('partner_email'), res, 'BlzPinpay: email input not found in rendered template')
 
     def test_30_blzpinpay_form_management(self):
-        self.assertEqual(self.stripe.environment, 'test', 'test without test environment')
+        self.assertEqual(self.blzpinpay.environment, 'test', 'test without test environment')
 
-        # typical data posted by Stripe after client has successfully paid
-        stripe_post_data = {
+        # typical data posted by BlzPinpay after client has successfully paid
+        blzpinpay_post_data = {
             u'amount': 4700,
             u'amount_refunded': 0,
             u'application_fee': None,
@@ -124,29 +124,29 @@ class StripeTest(StripeCommon):
 
         tx = self.env['payment.transaction'].create({
             'amount': 4700,
-            'acquirer_id': self.stripe.id,
+            'acquirer_id': self.blzpinpay.id,
             'currency_id': self.currency_euro.id,
             'reference': 'SO100-1',
             'partner_name': 'Norbert Buyer',
             'partner_country_id': self.country_france.id})
 
         # validate it
-        tx.form_feedback(stripe_post_data, 'stripe')
-        self.assertEqual(tx.state, 'done', 'Stripe: validation did not put tx into done state')
-        self.assertEqual(tx.acquirer_reference, stripe_post_data.get('id'), 'Stripe: validation did not update tx id')
-        stripe_post_data['metadata']['reference'] = u'SO100-2'
+        tx.form_feedback(blzpinpay_post_data, 'blzpinpay')
+        self.assertEqual(tx.state, 'done', 'BlzPinpay: validation did not put tx into done state')
+        self.assertEqual(tx.acquirer_reference, blzpinpay_post_data.get('id'), 'BlzPinpay: validation did not update tx id')
+        blzpinpay_post_data['metadata']['reference'] = u'SO100-2'
         # reset tx
         tx = self.env['payment.transaction'].create({
             'amount': 4700,
-            'acquirer_id': self.stripe.id,
+            'acquirer_id': self.blzpinpay.id,
             'currency_id': self.currency_euro.id,
             'reference': 'SO100-2',
             'partner_name': 'Norbert Buyer',
             'partner_country_id': self.country_france.id})
         # simulate an error
-        stripe_post_data['status'] = 'error'
-        stripe_post_data.update({u'error': {u'message': u"Your card's expiration year is invalid.", u'code': u'invalid_expiry_year', u'type': u'card_error', u'param': u'exp_year'}})
-        with mute_logger('odoo.addons.payment_stripe.models.payment'):
-            tx.form_feedback(stripe_post_data, 'stripe')
+        blzpinpay_post_data['status'] = 'error'
+        blzpinpay_post_data.update({u'error': {u'message': u"Your card's expiration year is invalid.", u'code': u'invalid_expiry_year', u'type': u'card_error', u'param': u'exp_year'}})
+        with mute_logger('odoo.addons.payment_blzpinpay.models.payment'):
+            tx.form_feedback(blzpinpay_post_data, 'blzpinpay')
         # check state
         self.assertEqual(tx.state, 'cancel', 'Stipe: erroneous validation did not put tx into error state')

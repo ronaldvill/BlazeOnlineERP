@@ -7,13 +7,15 @@
         <field name="arch" type="xml">
             <xpath expr='//group[@name="acquirer"]' position='after'>
                 <group attrs="{'invisible': [('provider', '!=', 'blzpinpay')]}">
-                    <field name="stripe_secret_key" password="True"/>
-                    <field name="stripe_publishable_key" password="True"/>
+                    <field name="blzpinpay_au_secret_key" password="True"/>
+                    <field name="blzpinpay_au_publishable_key" password="True"/>
+                    <field name="blzpinpay_us_secret_key" password="True"/>
+                    <field name="blzpinpay_us_publishable_key" password="True"/>
                 </group>
             </xpath>
             <xpath expr='//group[@name="acquirer_config"]' position='after'>
                 <group attrs="{'invisible': [('provider', '!=', 'blzpinpay')]}">
-                    <field name="stripe_image_url"/>
+                    <field name="blzpinpay_image_url"/>
                 </group>
             </xpath>
         </field>
