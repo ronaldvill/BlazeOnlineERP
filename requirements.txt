@@ -1,2 +1,1 @@
-inflect==2.1.0
-ndg==0
+ndg
