@@ -1,1 +1,8 @@
-ndg
+cffi==1.13.1
+cryptography==2.8
+inflect==2.1.0
+ndg-httpsclient==0.5.1
+pyasn1==0.4.7
+pycparser==2.19
+pyOpenSSL==19.0.0
+six==1.12.0
